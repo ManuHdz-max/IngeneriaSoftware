@@ -24,6 +24,7 @@ public class InterfazInventario extends javax.swing.JDialog {
     public InterfazInventario(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        adn = new AdnDatos();
         cProducto = new ProductoJpaController(adn.getEnf());
     }
 
