@@ -4,7 +4,7 @@
  */
 package vista;
 
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+//import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import control.AdmDatos;
 import control.TrabajadorJpaController;
 import java.awt.Image;
@@ -216,7 +216,7 @@ private Map<String,Trabajador> MapaTrabajador = new HashMap<>();
         }
         //</editor-fold>
         try {
-            FlatMacDarkLaf.setup();
+            //FlatMacDarkLaf.setup();
         } catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
         }
