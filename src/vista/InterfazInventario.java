@@ -7,7 +7,10 @@ package vista;
 import control.AdnDatos;
 import control.ProductoJpaController;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import modelo.DatosTablasProductos;
+import modelo.MTablaProducto;
 import modelo.Producto;
 
 /**
@@ -18,6 +21,9 @@ public class InterfazInventario extends javax.swing.JDialog {
 
     private ProductoJpaController cProducto;
     private AdnDatos adn;
+    private ArrayList<DatosTablasProductos> datosProductos;
+    private MTablaProducto modTabProducto;
+    
     /**
      * Creates new form InterfazInventario
      */
@@ -26,6 +32,9 @@ public class InterfazInventario extends javax.swing.JDialog {
         initComponents();
         adn = new AdnDatos();
         cProducto = new ProductoJpaController(adn.getEnf());
+        datosProductos = new ArrayList<>();
+        modTabProducto = new MTablaProducto(datosProductos);
+        lproductos.setModel(modTabProducto);
     }
 
     /**
@@ -114,7 +123,7 @@ public class InterfazInventario extends javax.swing.JDialog {
         menuInventarioLayout.setVerticalGroup(
             menuInventarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, menuInventarioLayout.createSequentialGroup()
-                .addContainerGap(51, Short.MAX_VALUE)
+                .addContainerGap(48, Short.MAX_VALUE)
                 .addGroup(menuInventarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
