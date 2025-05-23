@@ -7,15 +7,13 @@ package control;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-
-
 /**
  *
- * @author ericg
+ * @author Hp EliteBook
  */
-public class AdnDatos {
+public class AdmDatos {
     protected static EntityManagerFactory emf;
-    public static EntityManagerFactory getEnf(){
+    public static EntityManagerFactory getEntityManagerFactory(){
         if(emf == null) emf = Persistence.createEntityManagerFactory("MiChingonPU");
         return emf;
     }
