@@ -4,8 +4,10 @@
  */
 package modelo;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
+import org.w3c.dom.Text;
 
 /**
  *
@@ -13,8 +15,41 @@ import javax.swing.table.AbstractTableModel;
  */
 public class MTablaProducto extends AbstractTableModel{
     
-    private ArrayList<DatosTablasProductos> datosTablasProductos;
+    private ArrayList<DatosTablasProductos> datosProductos;
+    private String encabezados [] = {"Identificador","Nombre","Descripcion","Talla","Color","Precio"};
+    private Class clasesC [] = {Integer.class,String.class,Text.class,String.class,String.class,BigDecimal.class};
     public MTablaProducto(ArrayList mtp){
-        datosTablasProductos = mtp;
+        datosProductos = mtp;
+    }
+
+    @Override
+    public int getRowCount() {
+        return datosProductos.size();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return encabezados.length;
+    }
+    
+    public String getColumnName(int c){
+        return encabezados[c];
+    }
+    
+    public Class getColumnClass(int c){
+        return clasesC[c];
+    }
+
+    @Override
+    public Object getValueAt(int r, int c) {
+        switch(c){
+            case 0: return datosProductos.get(r).getIdProducto();
+            case 1: return datosProductos.get(r).getNombre();
+            case 2: return datosProductos.get(r).getDescripcion();
+            case 3: return datosProductos.get(r).getTalla();
+            case 4: return datosProductos.get(r).getColor();
+            case 5: return datosProductos.get(r).getPrecio();
+            default: return null;
+        }
     }
 }
