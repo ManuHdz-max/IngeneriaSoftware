@@ -4,8 +4,15 @@
  */
 package vista;
 
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import control.AdmDatos;
 import control.TrabajadorJpaController;
+import java.awt.Image;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
 import modelo.Trabajador;
 
@@ -15,20 +22,29 @@ import modelo.Trabajador;
  */
 public class Login extends javax.swing.JDialog {
 private Trabajador Trabajador;
-private TrabajadorJpaController cTtrabajador;
+private TrabajadorJpaController cTrabajador;
 private List<Trabajador> trabajadores;
 private String[] Carreras = {"Sistemas","Civil","Administracion", "Electronica"};
 private SpinnerNumberModel snm;
 private int max = 50; //Regla del negocioy
 private int min = 0;
-
+private ImageIcon iconMiniatura;
+private Map<String,Trabajador> MapaTrabajador = new HashMap<>();
     /**
      * Creates new form Login
      */
     public Login(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
+        iconMiniatura = redimensionarImagen("/imagenes/ZapateriaLogin.jpg", 300, 500);
+        LoginZapateria.setIcon(iconMiniatura);
+        iconMiniatura = redimensionarImagen("/imagenes/LogoMiChingon.png", 30, 30);
+        Logo.setIcon(iconMiniatura);
+        cTrabajador = new TrabajadorJpaController(AdmDatos.getEntityManagerFactory());
+        trabajadores = cTrabajador.findTrabajadorEntities();
+        cargarTrabajadores();
+    }
+    public void cargarTrabajadores(){
         
     }
     
@@ -41,22 +57,138 @@ private int min = 0;
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        LoginZapateria = new javax.swing.JLabel();
+        Logo = new javax.swing.JLabel();
+        Logo2 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        LoginUsuario = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        LoginPass = new javax.swing.JPasswordField();
+        BotonInicio = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        Logo.setFont(new java.awt.Font("Roboto Black", 0, 18)); // NOI18N
+        Logo.setText("  MiChingon");
+
+        Logo2.setFont(new java.awt.Font("Roboto Black", 0, 18)); // NOI18N
+        Logo2.setText("INICIAR SESION");
+
+        jLabel1.setFont(new java.awt.Font("Roboto Light", 0, 14)); // NOI18N
+        jLabel1.setText("USUARIO");
+
+        LoginUsuario.setFont(new java.awt.Font("Roboto", 0, 12)); // NOI18N
+        LoginUsuario.setForeground(new java.awt.Color(204, 204, 204));
+        LoginUsuario.setText("Usuario");
+        LoginUsuario.setBorder(null);
+        LoginUsuario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                LoginUsuarioMouseClicked(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Roboto Light", 0, 14)); // NOI18N
+        jLabel2.setText("CONTRASEÑA");
+
+        LoginPass.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        LoginPass.setForeground(new java.awt.Color(204, 204, 204));
+        LoginPass.setText("jPasswordField1");
+        LoginPass.setBorder(null);
+        LoginPass.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                LoginPassMouseClicked(evt);
+            }
+        });
+
+        BotonInicio.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        BotonInicio.setText("Iniciar Sesion");
+        BotonInicio.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        BotonInicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonInicioActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(53, 53, 53)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(Logo2, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Logo, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1)
+                            .addComponent(LoginUsuario)
+                            .addComponent(jLabel2)
+                            .addComponent(LoginPass, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(176, Short.MAX_VALUE)
+                        .addComponent(BotonInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(200, 200, 200)))
+                .addComponent(LoginZapateria, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addComponent(LoginZapateria, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(43, 43, 43)
+                .addComponent(Logo)
+                .addGap(55, 55, 55)
+                .addComponent(Logo2)
+                .addGap(34, 34, 34)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(LoginUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(LoginPass, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(63, 63, 63)
+                .addComponent(BotonInicio)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void LoginUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LoginUsuarioMouseClicked
+        // TODO add your handling code here:
+        LoginUsuario.setText("");
+    }//GEN-LAST:event_LoginUsuarioMouseClicked
+
+    private void BotonInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonInicioActionPerformed
+        // TODO add your handling code here:
+        String usuario = LoginUsuario.getText();
+        String password = LoginPass.getText();
+        for(Trabajador dTrabajador: trabajadores){
+            if(dTrabajador.getUsuario().equals(usuario)){
+                if(dTrabajador.getPassword().equals(password)){
+                    switch(dTrabajador.getRol()){
+                        case "Almacenista": JOptionPane.showMessageDialog(this,"Eres un almacenista");
+                        break;
+                        default: ;
+                    }
+                }
+                else JOptionPane.showMessageDialog(this,"Contraseña Incorrecta");
+            }else JOptionPane.showMessageDialog(this,"Usuario Incorrecto");
+        }
+        
+        
+    }//GEN-LAST:event_BotonInicioActionPerformed
+
+    private void LoginPassMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LoginPassMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_LoginPassMouseClicked
+    
+    public ImageIcon redimensionarImagen(String ruta, int ancho, int alto) {
+        ImageIcon icono = new ImageIcon(getClass().getResource(ruta)); // o ruta absoluta
+        Image imagen = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+        return new ImageIcon(imagen);
+    }
     /**
      * @param args the command line arguments
      */
@@ -83,7 +215,11 @@ private int min = 0;
             java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        try {
+            FlatMacDarkLaf.setup();
+        } catch( Exception ex ) {
+            System.err.println( "Failed to initialize LaF" );
+        }
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -100,5 +236,13 @@ private int min = 0;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BotonInicio;
+    private javax.swing.JPasswordField LoginPass;
+    private javax.swing.JTextField LoginUsuario;
+    private javax.swing.JLabel LoginZapateria;
+    private javax.swing.JLabel Logo;
+    private javax.swing.JLabel Logo2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }
