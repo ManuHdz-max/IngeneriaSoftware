@@ -4,11 +4,23 @@
  */
 package vista;
 
+import control.TrabajadorJpaController;
+import java.util.List;
+import javax.swing.SpinnerNumberModel;
+import modelo.Trabajador;
+
 /**
  *
  * @author Hp EliteBook
  */
 public class Login extends javax.swing.JDialog {
+private Trabajador Trabajador;
+private TrabajadorJpaController cTtrabajador;
+private List<Trabajador> trabajadores;
+private String[] Carreras = {"Sistemas","Civil","Administracion", "Electronica"};
+private SpinnerNumberModel snm;
+private int max = 50; //Regla del negocioy
+private int min = 0;
 
     /**
      * Creates new form Login
@@ -16,8 +28,10 @@ public class Login extends javax.swing.JDialog {
     public Login(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
