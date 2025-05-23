@@ -35,6 +35,9 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Reporte.findByDescripcion", query = "SELECT r FROM Reporte r WHERE r.descripcion = :descripcion")})
 public class Reporte implements Serializable {
 
+    @Column(name = "parametros")
+    private String parametros;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,9 +51,6 @@ public class Reporte implements Serializable {
     private Date fechaGenerado;
     @Column(name = "descripcion")
     private String descripcion;
-    @Lob
-    @Column(name = "parametros")
-    private Object parametros;
     @JoinColumn(name = "generado_por", referencedColumnName = "id_trabajador")
     @ManyToOne
     private Trabajador generadoPor;
@@ -94,13 +94,6 @@ public class Reporte implements Serializable {
         this.descripcion = descripcion;
     }
 
-    public Object getParametros() {
-        return parametros;
-    }
-
-    public void setParametros(Object parametros) {
-        this.parametros = parametros;
-    }
 
     public Trabajador getGeneradoPor() {
         return generadoPor;
@@ -133,6 +126,14 @@ public class Reporte implements Serializable {
     @Override
     public String toString() {
         return "modelo.Reporte[ idReporte=" + idReporte + " ]";
+    }
+
+    public String getParametros() {
+        return parametros;
+    }
+
+    public void setParametros(String parametros) {
+        this.parametros = parametros;
     }
     
 }
