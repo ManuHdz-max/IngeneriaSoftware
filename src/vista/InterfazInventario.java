@@ -7,6 +7,7 @@ package vista;
 import control.AdnDatos;
 import control.ProductoJpaController;
 import java.math.BigDecimal;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import modelo.Producto;
 
@@ -15,17 +16,17 @@ import modelo.Producto;
  * @author ericg
  */
 public class InterfazInventario extends javax.swing.JDialog {
-
     private ProductoJpaController cProducto;
     private AdnDatos adn;
     /**
      * Creates new form InterfazInventario
      */
     public InterfazInventario(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+        super(parent, modal);        
         initComponents();
         adn = new AdnDatos();
         cProducto = new ProductoJpaController(adn.getEnf());
+        
     }
 
     /**
