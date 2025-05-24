@@ -13,7 +13,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -23,7 +22,7 @@ import javax.persistence.TemporalType;
 
 /**
  *
- * @author Hp EliteBook
+ * @author magal
  */
 @Entity
 @Table(name = "reporte")
@@ -32,11 +31,9 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Reporte.findByIdReporte", query = "SELECT r FROM Reporte r WHERE r.idReporte = :idReporte"),
     @NamedQuery(name = "Reporte.findByTipoReporte", query = "SELECT r FROM Reporte r WHERE r.tipoReporte = :tipoReporte"),
     @NamedQuery(name = "Reporte.findByFechaGenerado", query = "SELECT r FROM Reporte r WHERE r.fechaGenerado = :fechaGenerado"),
-    @NamedQuery(name = "Reporte.findByDescripcion", query = "SELECT r FROM Reporte r WHERE r.descripcion = :descripcion")})
+    @NamedQuery(name = "Reporte.findByDescripcion", query = "SELECT r FROM Reporte r WHERE r.descripcion = :descripcion"),
+    @NamedQuery(name = "Reporte.findByParametros", query = "SELECT r FROM Reporte r WHERE r.parametros = :parametros")})
 public class Reporte implements Serializable {
-
-    @Column(name = "parametros")
-    private String parametros;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -51,6 +48,8 @@ public class Reporte implements Serializable {
     private Date fechaGenerado;
     @Column(name = "descripcion")
     private String descripcion;
+    @Column(name = "parametros")
+    private String parametros;
     @JoinColumn(name = "generado_por", referencedColumnName = "id_trabajador")
     @ManyToOne
     private Trabajador generadoPor;
@@ -94,6 +93,13 @@ public class Reporte implements Serializable {
         this.descripcion = descripcion;
     }
 
+    public String getParametros() {
+        return parametros;
+    }
+
+    public void setParametros(String parametros) {
+        this.parametros = parametros;
+    }
 
     public Trabajador getGeneradoPor() {
         return generadoPor;
@@ -126,14 +132,6 @@ public class Reporte implements Serializable {
     @Override
     public String toString() {
         return "modelo.Reporte[ idReporte=" + idReporte + " ]";
-    }
-
-    public String getParametros() {
-        return parametros;
-    }
-
-    public void setParametros(String parametros) {
-        this.parametros = parametros;
     }
     
 }

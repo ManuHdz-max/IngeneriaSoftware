@@ -18,13 +18,13 @@ import modelo.ValeDevolucion;
 
 /**
  *
- * @author Hp EliteBook
+ * @author magal
  */
-public class ValeDevolucionJpaController implements Serializable {
-
+public class ValeDevolucionJpaController {
+    
     public ValeDevolucionJpaController(EntityManagerFactory emf) {
         this.emf = emf;
-    }
+}
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {

@@ -23,7 +23,7 @@ import modelo.Pedido;
 
 /**
  *
- * @author Hp EliteBook
+ * @author magal
  */
 public class ClienteJpaController implements Serializable {
 

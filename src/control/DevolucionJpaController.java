@@ -22,7 +22,7 @@ import modelo.Devolucion;
 
 /**
  *
- * @author Hp EliteBook
+ * @author magal
  */
 public class DevolucionJpaController implements Serializable {
 

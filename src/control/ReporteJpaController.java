@@ -18,13 +18,13 @@ import modelo.Trabajador;
 
 /**
  *
- * @author Hp EliteBook
+ * @author magal
  */
-public class ReporteJpaController implements Serializable {
-
+public class ReporteJpaController {
+    
     public ReporteJpaController(EntityManagerFactory emf) {
         this.emf = emf;
-    }
+}
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {

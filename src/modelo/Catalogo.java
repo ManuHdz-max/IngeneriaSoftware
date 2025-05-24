@@ -24,7 +24,7 @@ import javax.persistence.TemporalType;
 
 /**
  *
- * @author Hp EliteBook
+ * @author magal
  */
 @Entity
 @Table(name = "catalogo")
