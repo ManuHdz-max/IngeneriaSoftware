@@ -1,3 +1,4 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -39,6 +40,9 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Producto.findByPrecio", query = "SELECT p FROM Producto p WHERE p.precio = :precio"),
     @NamedQuery(name = "Producto.findByFechaRegistro", query = "SELECT p FROM Producto p WHERE p.fechaRegistro = :fechaRegistro")})
 public class Producto implements Serializable {
+
+    @OneToMany(mappedBy = "idProducto")
+    private Collection<DetallePedido> detallePedidoCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -175,6 +179,14 @@ public class Producto implements Serializable {
     @Override
     public String toString() {
         return "modelo.Producto[ idProducto=" + idProducto + " ]";
+    }
+
+    public Collection<DetallePedido> getDetallePedidoCollection() {
+        return detallePedidoCollection;
+    }
+
+    public void setDetallePedidoCollection(Collection<DetallePedido> detallePedidoCollection) {
+        this.detallePedidoCollection = detallePedidoCollection;
     }
     
 }
