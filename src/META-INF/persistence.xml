@@ -13,6 +13,7 @@
     <class>modelo.Transaccion</class>
     <class>modelo.Pedido</class>
     <class>modelo.HistorialCliente</class>
+    <class>modelo.DetallePedido</class>
     <class>modelo.Devolucion</class>
     <class>modelo.Reporte</class>
     <class>modelo.Ticket</class>
@@ -23,7 +24,7 @@
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://aws-0-us-east-2.pooler.supabase.com:6543/postgres?user=postgres.smagcfzfmkudwrsnkvsf&amp;password=MiCHingon.com"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>
       <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-      <property name="javax.persistence.jdbc.password" value="magali"/>
+      <property name="javax.persistence.jdbc.password" value="MiCHingon.com"/>
     </properties>
   </persistence-unit>
 </persistence>
