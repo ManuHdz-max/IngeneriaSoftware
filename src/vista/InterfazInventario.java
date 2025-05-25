@@ -18,7 +18,6 @@ import modelo.Producto;
  * @author ericg
  */
 public class InterfazInventario extends javax.swing.JDialog {
-
     private ProductoJpaController cProducto;
     private AdnDatos adn;
     private ArrayList<Producto> datosProductos;
@@ -34,7 +33,7 @@ public class InterfazInventario extends javax.swing.JDialog {
      * Creates new form InterfazInventario
      */
     public InterfazInventario(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+        super(parent, modal);        
         initComponents();
         adn = new AdnDatos();
         cProducto = new ProductoJpaController(adn.getEnf());
@@ -380,7 +379,7 @@ public class InterfazInventario extends javax.swing.JDialog {
                     for(Producto pr : productos){
                         int idp = Integer.parseInt(txtBuscar.getText());
                         if(pr.getIdProducto()== idp)
-                            productos_s.add(pr); break;
+                            productos_s.add(pr);
                     }
                     break;
                 case 3:
@@ -406,13 +405,13 @@ public class InterfazInventario extends javax.swing.JDialog {
                 case 7:
                     BigDecimal bd = new BigDecimal(txtBuscar.getText());
                     for(Producto pr : productos)
-                        if(bd.compareTo(pr.getPrecio())<=0)
+                        if(bd.compareTo(pr.getPrecio())>=0)
                             productos_s.add(pr);
                     break;
                 case 8:
                     BigDecimal bdM = new BigDecimal(txtBuscar.getText());
                     for(Producto pr : productos)
-                        if(bdM.compareTo(pr.getPrecio())>=0)
+                        if(bdM.compareTo(pr.getPrecio())<=0)
                             productos_s.add(pr);
                     break;
                 default:
