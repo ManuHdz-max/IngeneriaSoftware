@@ -63,6 +63,13 @@ private String usuarioElegido;
     }
     public void AbrirInterfazCajero(){
        // Cerrar ventana login
+        setVisible(false);
+
+        new InterfazCajero(null, true).setVisible(true); // o false si no quieres que sea modal
+
+        // Cuando cierras inventario puedes volver a mostrar login si quieres
+        setVisible(true);
+
       
     }
     public void AbrirInterfazGerente(){
@@ -72,12 +79,9 @@ private String usuarioElegido;
     public void AbrirInterfazRecepcionista(){
        // Cerrar ventana login
         setVisible(false);
-
         new InterfazPedido(null, true, usuarioElegido).setVisible(true); // o false si no quieres que sea modal
-
         // Cuando cierras inventario puedes volver a mostrar login si quieres
-        setVisible(true);
-       
+        setVisible(true);    
     }
     /**
      * This method is called from within the constructor to initialize the form.
