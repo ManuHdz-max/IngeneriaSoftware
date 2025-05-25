@@ -298,8 +298,8 @@
                               <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
-                                      <Component id="textFecha" min="-2" pref="154" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="187" max="-2" attributes="0"/>
+                                      <Component id="textFecha" min="-2" pref="276" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
                                       <Component id="Bconfi" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="calendarioSelec" min="-2" pref="434" max="-2" attributes="0"/>

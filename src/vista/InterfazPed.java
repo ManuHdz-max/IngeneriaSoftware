@@ -21,10 +21,13 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Pedido;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SpinnerNumberModel;
@@ -57,6 +60,7 @@ public class InterfazPed extends javax.swing.JDialog {
     private String nl = System.lineSeparator();
     private Date fechaEla = new Date();
     private Date fechaEntre = new Date();
+    private SimpleDateFormat formato = new SimpleDateFormat("dd 'de' MMM 'de' yyy ");
 
     //combos
     private List<Cliente> clientes;
@@ -69,6 +73,11 @@ public class InterfazPed extends javax.swing.JDialog {
     //cantidad de inventario
     private InventarioJpaController cInventario;
     private List<Inventario> inventario;
+    //guardar detalles externos
+    private Map<Pedido, String> descripciones = new HashMap<>();
+    //valores para calcular precios
+    private BigDecimal costoProductos = BigDecimal.ZERO;
+    private BigDecimal totalMonto = BigDecimal.ZERO;
 
     public InterfazPed(java.awt.Frame parent, boolean modal) throws Exception {
         super(parent, modal);
@@ -79,8 +88,8 @@ public class InterfazPed extends javax.swing.JDialog {
         cDetalleP = new DetallePedidoJpaController(emf);
         cCliente = new ClienteJpaController(emf);
         cProducto = new ProductoJpaController(emf);
-        cInventario=new InventarioJpaController(emf);
-        
+        cInventario = new InventarioJpaController(emf);
+
         clientes = cCliente.findClienteEntities();
         productos = cProducto.findProductoEntities();
         detalles = cDetalleP.findDetallePedidoEntities();
@@ -150,7 +159,7 @@ public class InterfazPed extends javax.swing.JDialog {
             clienteCB.addItem(c.getNombre() + " " + c.getApellido());
         }
         for (Producto p : productos) {
-            productoCB.addItem("id: " + p.getIdProducto() + "- " + p.getNombre());
+            productoCB.addItem("id: " + p.getIdProducto() + " -- " + p.getNombre());
 
         }
         cantidadSP.setValue(0);
@@ -186,19 +195,20 @@ public class InterfazPed extends javax.swing.JDialog {
                 precioP = totalTem.floatValue();
                 totalPedido += precioP;
                 listaP += "Producto: " + de.getIdProducto().getNombre() + " Cantidad: " + de.getCantidad() + " Precio Individual: " + de.getIdProducto().getPrecio() + nl
-                        + "Talla:" + de.getIdProducto().getTalla() + " Color:" + de.getIdProducto().getColor() + " Subtotal:" + precioP + nl;
+                        + descripciones.get(p)
+                        + " Subtotal:" + precioP + nl;
             }
         }
         //guardar total en pedido
-        p.setTotal(new BigDecimal(Float.toString(totalPedido)));
-        cPedido.edit(p);
+
         return listaP;
 
     }
 
     private Inventario buscaInventario(Producto p) {
         for (Inventario in : inventario) {
-            if (in.getIdProducto().toString().equals(p.getIdProducto().toString())) {
+            System.out.println("ID INVENTARIO" + in.getIdInventario());
+            if (in.getIdProducto().getIdProducto() == p.getIdProducto()) {
                 return in;
             }
         }
@@ -498,8 +508,8 @@ public class InterfazPed extends javax.swing.JDialog {
                         .addGap(27, 27, 27)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(textFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(187, 187, 187)
+                                .addComponent(textFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(65, 65, 65)
                                 .addComponent(Bconfi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(calendarioSelec, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 64, Short.MAX_VALUE))
@@ -662,8 +672,12 @@ public class InterfazPed extends javax.swing.JDialog {
     }//GEN-LAST:event_bBuscarActionPerformed1
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        registrarPedido();
+        try {
+            // TODO add your handling code here:
+            registrarPedido();
+        } catch (Exception ex) {
+            Logger.getLogger(InterfazPed.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -704,26 +718,29 @@ public class InterfazPed extends javax.swing.JDialog {
     private void productoCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productoCBActionPerformed
         // TODO add your handling code here:
         //cambiar talla, tipo y color segun producto
-        if (selecPro != 0) {
+        selecPro = productoCB.getSelectedIndex();
+        if (selecPro > 0) {
             colorCB.removeAllItems();
             tallaCB.removeAllItems();
-
-            selecPro = productoCB.getSelectedIndex();
+            System.out.println("seleccion de producto" + selecPro);
             Producto seP = productos.get(selecPro - 1);
             String[] colores = seP.getColor().split(",");
-            for (int i = 0; i < colores.length - 1; i++) {
+
+            for (int i = 0; i < colores.length; i++) {
                 colorCB.addItem(colores[i]);
             }
             String tallas[] = seP.getTalla().split(",");
-            for (int i = 0; i < tallas.length - 1; i++) {
+
+            for (int i = 0; i < tallas.length; i++) {
                 tallaCB.addItem(tallas[i]);
             }
             Inventario inven = buscaInventario(seP);
-            if (inven != null) {
-                Msp.setMinimum(inven.getCantidadMinima());
+            if (inven != null && inven.getCantidadActual() > 0) {
+                Msp.setMinimum(1);
+                Msp.setValue(1);
                 Msp.setMaximum(inven.getCantidadActual());
                 cantidadSP.setModel(Msp);
-            } else {
+            } else {//no esta registrado en inventario
                 Msp.setValue(0);
                 cantidadSP.setModel(Msp);
             }
@@ -735,35 +752,55 @@ public class InterfazPed extends javax.swing.JDialog {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        NuevoP=null;
+
+        if (NuevoP != null) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Pedido" + NuevoP.getIdPedido() + " finalizado Monto Total:$" + totalMonto.toString(),
+                    "Informacion",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            //guardarTotal
+            NuevoP.setTotal(totalMonto);
+            try {
+                cPedido.edit(NuevoP);
+                System.out.println("Total registrado");
+            } catch (Exception ex) {
+                Logger.getLogger(InterfazPed.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        //preparar para nuevo pedido
+        NuevoP = null;
+        totalMonto = BigDecimal.ZERO;
+        costoProductos = BigDecimal.ZERO;
         cargarCB();
-        JOptionPane.showMessageDialog(
-                        null,
-                        "Pedido finalizado",
-                        "Informacion",
-                        JOptionPane.WARNING_MESSAGE
-                );
     }//GEN-LAST:event_jButton3ActionPerformed
     public void guardarFecha() {
 
-        fechaEla = calendarioSelec.getDate();
+        fechaEntre = calendarioSelec.getDate();
+        textFecha.setText("Fecha: " + formato.format(fechaEntre));
         calendarioSelec.setEnabled(false);
 
     }
 
-    public void registrarPedido() {//agrega a detalle
-        if (clienteCB.getSelectedIndex() != 0 && productoCB.getSelectedIndex() != 0 && colorCB.getSelectedIndex() != 0 && tallaCB.getSelectedIndex() != 0 && fechaEla != null && fechaEntre != null && (Integer) cantidadSP.getValue() != 0) {
+    public void registrarPedido() throws NonexistentEntityException, Exception {//agrega a detalle
+        if (clienteCB.getSelectedIndex() != 0 && productoCB.getSelectedIndex() != 0 && fechaEla != null && fechaEntre != null && (Integer) cantidadSP.getValue() != 0) {
 
-            if (tallaCB.getSelectedIndex() != 0) {
+            if (tallaCB.getSelectedIndex() >= 0) {
+                costoProductos = BigDecimal.ZERO;
 
                 Cliente client = clientes.get(clienteCB.getSelectedIndex() - 1);
                 Date fechaActual = new Date();//fecha de generacion de pedido actual
+
                 Producto prod = productos.get(productoCB.getSelectedIndex() - 1);
+                BigInteger cant = new BigInteger(cantidadSP.getValue().toString());
+                costoProductos = prod.getPrecio().multiply(new BigDecimal(cant));
+                totalMonto.add(costoProductos);
 
                 String talla = tallaCB.getSelectedItem().toString();
                 String color = colorCB.getSelectedItem().toString();
                 String msj = "Cliente: " + client.getNombre() + " " + client.getApellido() + " Poducto: " + prod.getNombre() + "\n"
-                        + "Fecha entrega:" + fechaEntre;
+                        + " Fecha entrega:" + formato.format(fechaEntre) + " Costo:" + costoProductos;
 
                 int resp = JOptionPane.showConfirmDialog(
                         null,
@@ -775,19 +812,24 @@ public class InterfazPed extends javax.swing.JDialog {
                 if (resp == JOptionPane.YES_OPTION) {
 
                     //agregar nuevo
-                    if (NuevoP != null) {
+                    if (NuevoP == null) {
 
                         Pedido nuevoP = new Pedido();
                         nuevoP.setIdCliente(client);
                         nuevoP.setFechaPedido(fechaActual);
                         nuevoP.setFechaEntregaEstimada(fechaEntre);//FECHA SELECCIONADA EN CALENDARIO
                         nuevoP.setEstado("Pendiente");//para nuevo pedido
+                        
                         NuevoP = nuevoP;
+                        cPedido.create(NuevoP);
                     }
                     DetallePedido producto = new DetallePedido();
                     producto.setIdPedido(NuevoP);
                     producto.setIdProducto(prod);
-                    producto.setCantidad((BigInteger) cantidadSP.getValue());
+                    producto.setCantidad(cant);
+                    //guardar en programa
+                    // descripciones.put(NuevoP, "Color: "+color+" Talla:"+talla);
+                    System.out.println("Producto agregado a pedido ");
 
                 } else {
                     cargarCB();
