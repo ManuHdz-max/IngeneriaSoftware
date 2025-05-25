@@ -4,7 +4,7 @@
  */
 package vista;
 
-//import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import control.AdmDatos;
 import control.TrabajadorJpaController;
 import java.awt.Image;
@@ -259,7 +259,7 @@ private String usuarioElegido;
             java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

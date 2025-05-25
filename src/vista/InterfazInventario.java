@@ -68,6 +68,7 @@ public class InterfazInventario extends javax.swing.JDialog {
     
     private void cargarFiltro(){
         //switch()
+
     }
 
     /**
