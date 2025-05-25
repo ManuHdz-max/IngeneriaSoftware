@@ -86,6 +86,11 @@ private Map<String,Trabajador> MapaTrabajador = new HashMap<>();
                 LoginUsuarioMouseClicked(evt);
             }
         });
+        LoginUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LoginUsuarioActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Roboto Light", 0, 14)); // NOI18N
         jLabel2.setText("CONTRASEÑA");
@@ -183,6 +188,10 @@ private Map<String,Trabajador> MapaTrabajador = new HashMap<>();
     private void LoginPassMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LoginPassMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_LoginPassMouseClicked
+
+    private void LoginUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginUsuarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_LoginUsuarioActionPerformed
     
     public ImageIcon redimensionarImagen(String ruta, int ancho, int alto) {
         ImageIcon icono = new ImageIcon(getClass().getResource(ruta)); // o ruta absoluta

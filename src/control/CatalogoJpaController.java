@@ -20,7 +20,7 @@ import modelo.Catalogo;
 
 /**
  *
- * @author Hp EliteBook
+ * @author magal
  */
 public class CatalogoJpaController implements Serializable {
 

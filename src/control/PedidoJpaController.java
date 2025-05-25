@@ -24,13 +24,13 @@ import modelo.Transaccion;
 
 /**
  *
- * @author Hp EliteBook
+ * @author magal
  */
-public class PedidoJpaController implements Serializable {
-
+public class PedidoJpaController {
+    
     public PedidoJpaController(EntityManagerFactory emf) {
         this.emf = emf;
-    }
+}
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {

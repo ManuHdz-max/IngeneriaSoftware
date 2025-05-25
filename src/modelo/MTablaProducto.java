@@ -22,6 +22,10 @@ public class MTablaProducto extends AbstractTableModel{
         datosProductos = mtp;
     }
 
+    private String[] getEncabezados(){
+        return encabezados;
+    }
+    
     @Override
     public int getRowCount() {
         return datosProductos.size();

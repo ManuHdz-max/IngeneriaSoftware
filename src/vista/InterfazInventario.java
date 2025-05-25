@@ -23,6 +23,7 @@ public class InterfazInventario extends javax.swing.JDialog {
     private AdnDatos adn;
     private ArrayList<DatosTablasProductos> datosProductos;
     private MTablaProducto modTabProducto;
+    private final String SELECTCBM = "Selecciona Filtro";
     
     /**
      * Creates new form InterfazInventario
@@ -35,6 +36,14 @@ public class InterfazInventario extends javax.swing.JDialog {
         datosProductos = new ArrayList<>();
         modTabProducto = new MTablaProducto(datosProductos);
         lproductos.setModel(modTabProducto);
+        cargarProductos();
+    }
+    
+    private void cargarProductos(){
+        cbmColumn.removeAllItems();
+        cbmColumn.addItem(SELECTCBM);
+        //cbmColumn.addItem();
+        //lproductos.
     }
 
     /**
@@ -52,7 +61,7 @@ public class InterfazInventario extends javax.swing.JDialog {
         lproductos = new javax.swing.JTable();
         jLabel8 = new javax.swing.JLabel();
         txtBuscar = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cbmColumn = new javax.swing.JComboBox<>();
         btnBuscar = new javax.swing.JButton();
         menuP = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -87,7 +96,7 @@ public class InterfazInventario extends javax.swing.JDialog {
         ));
         scrollProductos.setViewportView(lproductos);
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel8.setText("Dato a buscar:");
 
         txtBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -96,8 +105,9 @@ public class InterfazInventario extends javax.swing.JDialog {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbmColumn.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        btnBuscar.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         btnBuscar.setText("Buscar");
 
         javax.swing.GroupLayout menuInventarioLayout = new javax.swing.GroupLayout(menuInventario);
@@ -115,7 +125,7 @@ public class InterfazInventario extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbmColumn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnBuscar)))
                 .addContainerGap(12, Short.MAX_VALUE))
@@ -127,7 +137,7 @@ public class InterfazInventario extends javax.swing.JDialog {
                 .addGroup(menuInventarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbmColumn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBuscar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(scrollProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -136,19 +146,19 @@ public class InterfazInventario extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("Buscar", menuInventario);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel1.setText("Nombre:");
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel2.setText("Descripcion:");
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel3.setText("Talla:");
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel4.setText("Color:");
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel5.setText("Precio:");
 
         txtDescripcion.setColumns(20);
@@ -161,7 +171,7 @@ public class InterfazInventario extends javax.swing.JDialog {
             }
         });
 
-        btnR.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnR.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         btnR.setText("Registrar");
         btnR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -202,7 +212,7 @@ public class InterfazInventario extends javax.swing.JDialog {
                             .addComponent(jLabel1)
                             .addGap(27, 27, 27)
                             .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addContainerGap(80, Short.MAX_VALUE))
         );
         menuPLayout.setVerticalGroup(
             menuPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -339,7 +349,7 @@ public class InterfazInventario extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnR;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> cbmColumn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
