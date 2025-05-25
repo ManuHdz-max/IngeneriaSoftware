@@ -8,8 +8,8 @@ import control.AdnDatos;
 import control.ProductoJpaController;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
-import modelo.DatosTablasProductos;
 import modelo.MTablaProducto;
 import modelo.Producto;
 
@@ -20,8 +20,14 @@ import modelo.Producto;
 public class InterfazInventario extends javax.swing.JDialog {
     private ProductoJpaController cProducto;
     private AdnDatos adn;
-    private ArrayList<DatosTablasProductos> datosProductos;
+    private ArrayList<Producto> datosProductos;
     private MTablaProducto modTabProducto;
+    private final String SELECTCBM = "Selecciona Filtro";
+    private final String SELECTCBM2 = "Sin Filtro";
+    private final String SELECTCBM3 = "Precio menor a";
+    private final String SELECTCBM4 = "Precio mayor a";
+    private List<Producto> productos;
+    private List<Producto> productos_s;
     
     /**
      * Creates new form InterfazInventario
@@ -31,10 +37,38 @@ public class InterfazInventario extends javax.swing.JDialog {
         initComponents();
         adn = new AdnDatos();
         cProducto = new ProductoJpaController(adn.getEnf());
+        productos = cProducto.findProductoEntities();
         datosProductos = new ArrayList<>();
         modTabProducto = new MTablaProducto(datosProductos);
         lproductos.setModel(modTabProducto);
+        btnBuscar.setEnabled(false);
+        cargarProductos();
+    }
+    
+    private void cargarProductos(){
+        cbmColumn.removeAllItems();
+        cbmColumn.addItem(SELECTCBM);
+        cbmColumn.addItem(SELECTCBM2);
+        for(int i = 0; i<modTabProducto.getColumnCount()-1; i++){
+            cbmColumn.addItem(modTabProducto.getColumnName(i));
+        }
+        cbmColumn.addItem(SELECTCBM3);
+        cbmColumn.addItem(SELECTCBM4);
         
+        productos_s = new ArrayList<>();
+        for(Producto pr : productos)
+            productos_s.add(pr);
+        datosProductos = new ArrayList<>();
+        for(Producto pr : productos_s){
+            datosProductos.add(pr);
+        }
+        modTabProducto = new MTablaProducto(datosProductos);
+        lproductos.setModel(modTabProducto);
+    }
+    
+    private void cargarFiltro(){
+        //switch()
+
     }
 
     /**
@@ -52,7 +86,7 @@ public class InterfazInventario extends javax.swing.JDialog {
         lproductos = new javax.swing.JTable();
         jLabel8 = new javax.swing.JLabel();
         txtBuscar = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cbmColumn = new javax.swing.JComboBox<>();
         btnBuscar = new javax.swing.JButton();
         menuP = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -68,6 +102,8 @@ public class InterfazInventario extends javax.swing.JDialog {
         txtPrecio = new javax.swing.JTextField();
         btnR = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -87,7 +123,7 @@ public class InterfazInventario extends javax.swing.JDialog {
         ));
         scrollProductos.setViewportView(lproductos);
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel8.setText("Dato a buscar:");
 
         txtBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -96,9 +132,20 @@ public class InterfazInventario extends javax.swing.JDialog {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbmColumn.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbmColumn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbmColumnActionPerformed(evt);
+            }
+        });
 
+        btnBuscar.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout menuInventarioLayout = new javax.swing.GroupLayout(menuInventario);
         menuInventario.setLayout(menuInventarioLayout);
@@ -115,7 +162,7 @@ public class InterfazInventario extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbmColumn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnBuscar)))
                 .addContainerGap(12, Short.MAX_VALUE))
@@ -127,7 +174,7 @@ public class InterfazInventario extends javax.swing.JDialog {
                 .addGroup(menuInventarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbmColumn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBuscar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(scrollProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -136,19 +183,19 @@ public class InterfazInventario extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("Buscar", menuInventario);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel1.setText("Nombre:");
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel2.setText("Descripcion:");
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel3.setText("Talla:");
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel4.setText("Color:");
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel5.setText("Precio:");
 
         txtDescripcion.setColumns(20);
@@ -161,7 +208,7 @@ public class InterfazInventario extends javax.swing.JDialog {
             }
         });
 
-        btnR.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnR.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         btnR.setText("Registrar");
         btnR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -202,7 +249,7 @@ public class InterfazInventario extends javax.swing.JDialog {
                             .addComponent(jLabel1)
                             .addGap(27, 27, 27)
                             .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addContainerGap(80, Short.MAX_VALUE))
         );
         menuPLayout.setVerticalGroup(
             menuPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -237,6 +284,28 @@ public class InterfazInventario extends javax.swing.JDialog {
         );
 
         jTabbedPane1.addTab("Registrar", menuP);
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
+        jLabel9.setText("Pedidos Pendientes");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(196, 196, 196)
+                .addComponent(jLabel9)
+                .addContainerGap(220, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(jLabel9)
+                .addContainerGap(270, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Pedidos", jPanel1);
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
         jLabel7.setText("Inventario");
@@ -294,6 +363,74 @@ public class InterfazInventario extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBuscarActionPerformed
 
+    private void cbmColumnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbmColumnActionPerformed
+        if(cbmColumn.getSelectedItem()!= SELECTCBM)
+            btnBuscar.setEnabled(true);
+        else
+            btnBuscar.setEnabled(false);
+    }//GEN-LAST:event_cbmColumnActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        int opc = cbmColumn.getSelectedIndex();
+        lproductos.setModel(new MTablaProducto(new ArrayList<>()));
+        try{
+            productos_s = new ArrayList<>();
+            switch(opc){
+                case 2:
+                    for(Producto pr : productos){
+                        int idp = Integer.parseInt(txtBuscar.getText());
+                        if(pr.getIdProducto()== idp)
+                            productos_s.add(pr);
+                    }
+                    break;
+                case 3:
+                    for(Producto pr : productos)
+                        if(pr.getNombre().toLowerCase().contains(txtBuscar.getText().toLowerCase()))
+                            productos_s.add(pr);
+                    break;
+                case 4:
+                    for(Producto pr : productos)
+                        if(pr.getDescripcion().toLowerCase().contains(txtBuscar.getText().toLowerCase()))
+                            productos_s.add(pr);
+                    break;
+                case 5:
+                    for(Producto pr : productos)
+                        if(pr.getTalla().toLowerCase().contains(txtBuscar.getText().toLowerCase()))
+                            productos_s.add(pr);
+                    break;
+                case 6:
+                    for(Producto pr : productos)
+                        if(pr.getColor().toLowerCase().contains(txtBuscar.getText().toLowerCase()))
+                            productos_s.add(pr);
+                    break;
+                case 7:
+                    BigDecimal bd = new BigDecimal(txtBuscar.getText());
+                    for(Producto pr : productos)
+                        if(bd.compareTo(pr.getPrecio())>=0)
+                            productos_s.add(pr);
+                    break;
+                case 8:
+                    BigDecimal bdM = new BigDecimal(txtBuscar.getText());
+                    for(Producto pr : productos)
+                        if(bdM.compareTo(pr.getPrecio())<=0)
+                            productos_s.add(pr);
+                    break;
+                default:
+                    for(Producto pr : productos)
+                        productos_s.add(pr);
+                    break;
+            }
+            datosProductos = new ArrayList<>();
+            for(Producto ps : productos_s)
+                datosProductos.add(ps);
+            modTabProducto  = new MTablaProducto(datosProductos);
+            lproductos.setModel(modTabProducto);
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(this,"Formato de Busqueda invalido");
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -339,7 +476,7 @@ public class InterfazInventario extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnR;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> cbmColumn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -348,6 +485,8 @@ public class InterfazInventario extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable lproductos;

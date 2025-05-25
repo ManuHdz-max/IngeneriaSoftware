@@ -4,7 +4,8 @@
  */
 package vista;
 
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+
+//import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import control.AdmDatos;
 import control.ProductoJpaController;
 import java.awt.CardLayout;
@@ -618,12 +619,7 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
         }
         //</editor-fold>
 
-        try {
-            FlatMacDarkLaf.setup();
-        } catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
-        }
-        
+
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

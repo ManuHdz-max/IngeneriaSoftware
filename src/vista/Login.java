@@ -259,11 +259,7 @@ private String usuarioElegido;
             java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        try {
-            FlatMacDarkLaf.setup();
-        } catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
-        }
+
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
