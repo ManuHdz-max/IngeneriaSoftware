@@ -12,8 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import modelo.Trabajador;
 
 /**
@@ -30,6 +32,7 @@ private int max = 50; //Regla del negocioy
 private int min = 0;
 private ImageIcon iconMiniatura;
 private Map<String,Trabajador> MapaTrabajador = new HashMap<>();
+private String usuarioElegido;
     /**
      * Creates new form Login
      */
@@ -47,7 +50,39 @@ private Map<String,Trabajador> MapaTrabajador = new HashMap<>();
     public void cargarTrabajadores(){
         
     }
-    
+    public void AbrirInterfazAlmacenista(){
+       // Cerrar ventana login
+        setVisible(false);
+
+        InterfazInventario inventario = new InterfazInventario(null, true); // o false si no quieres que sea modal
+        inventario.setLocationRelativeTo(null);
+        inventario.setVisible(true);
+
+        // Cuando cierras inventario puedes volver a mostrar login si quieres
+        setVisible(true);
+    }
+    public void AbrirInterfazCajero(){
+       // Cerrar ventana login
+        setVisible(false);
+
+        new InterfazCajero(null, true).setVisible(true); // o false si no quieres que sea modal
+
+        // Cuando cierras inventario puedes volver a mostrar login si quieres
+        setVisible(true);
+
+      
+    }
+    public void AbrirInterfazGerente(){
+       // Cerrar ventana login
+       
+    }
+    public void AbrirInterfazRecepcionista(){
+       // Cerrar ventana login
+        setVisible(false);
+        //new InterfazPed(null, true, usuarioElegido).setVisible(true); // o false si no quieres que sea modal
+        // Cuando cierras inventario puedes volver a mostrar login si quieres
+        setVisible(true);    
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -159,30 +194,28 @@ private Map<String,Trabajador> MapaTrabajador = new HashMap<>();
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     private void LoginUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LoginUsuarioMouseClicked
         // TODO add your handling code here:
-        LoginUsuario.setText("");
     }//GEN-LAST:event_LoginUsuarioMouseClicked
 
     private void BotonInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonInicioActionPerformed
         // TODO add your handling code here:
         String usuario = LoginUsuario.getText();
         String password = LoginPass.getText();
+        boolean encontrado = false;
         for(Trabajador dTrabajador: trabajadores){
-            if(dTrabajador.getUsuario().equals(usuario)){
-                if(dTrabajador.getPassword().equals(password)){
-                    switch(dTrabajador.getRol()){
-                        case "Almacenista": JOptionPane.showMessageDialog(this,"Eres un almacenista");
-                        break;
-                        default: ;
-                    }
+            if(dTrabajador.getUsuario().equals(usuario) && dTrabajador.getPassword().equals(password)){
+                encontrado = true;
+                usuarioElegido = dTrabajador.getNombre();
+                switch(dTrabajador.getRol()){
+                    case "Almacenista": AbrirInterfazAlmacenista(); break;
+                    case "Cajero": AbrirInterfazCajero(); break;
+                    case "Gerente":  AbrirInterfazGerente(); break;
+                    case "Recepcionista": AbrirInterfazRecepcionista(); break;
                 }
-                else JOptionPane.showMessageDialog(this,"Contraseña Incorrecta");
-            }else JOptionPane.showMessageDialog(this,"Usuario Incorrecto");
+            }
         }
-        
-        
+        if(!encontrado)JOptionPane.showMessageDialog(null,"Usuario o Contraseña Incorrectos");      
     }//GEN-LAST:event_BotonInicioActionPerformed
 
     private void LoginPassMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LoginPassMouseClicked
@@ -198,6 +231,8 @@ private Map<String,Trabajador> MapaTrabajador = new HashMap<>();
         Image imagen = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
         return new ImageIcon(imagen);
     }
+    
+    public String getUsuarioElegido(){return usuarioElegido;}
     /**
      * @param args the command line arguments
      */
@@ -224,11 +259,7 @@ private Map<String,Trabajador> MapaTrabajador = new HashMap<>();
             java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        try {
-            //FlatMacDarkLaf.setup();
-        } catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
-        }
+        
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

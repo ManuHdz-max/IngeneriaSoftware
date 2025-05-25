@@ -377,40 +377,48 @@ public class InterfazInventario extends javax.swing.JDialog {
             productos_s = new ArrayList<>();
             switch(opc){
                 case 2:
-                    for(Producto pr : productos)
-                        if(pr.getIdProducto()==Integer.parseInt(txtBuscar.getText())){
-                            productos_s.add(pr); break;}
+                    for(Producto pr : productos){
+                        int idp = Integer.parseInt(txtBuscar.getText());
+                        if(pr.getIdProducto()== idp)
+                            productos_s.add(pr); break;
+                    }
+                    break;
                 case 3:
                     for(Producto pr : productos)
                         if(pr.getNombre().toLowerCase().contains(txtBuscar.getText().toLowerCase()))
                             productos_s.add(pr);
+                    break;
                 case 4:
                     for(Producto pr : productos)
                         if(pr.getDescripcion().toLowerCase().contains(txtBuscar.getText().toLowerCase()))
                             productos_s.add(pr);
+                    break;
                 case 5:
                     for(Producto pr : productos)
                         if(pr.getTalla().toLowerCase().contains(txtBuscar.getText().toLowerCase()))
                             productos_s.add(pr);
+                    break;
                 case 6:
                     for(Producto pr : productos)
                         if(pr.getColor().toLowerCase().contains(txtBuscar.getText().toLowerCase()))
                             productos_s.add(pr);
+                    break;
                 case 7:
                     BigDecimal bd = new BigDecimal(txtBuscar.getText());
-                    for(Producto pr : productos){
+                    for(Producto pr : productos)
                         if(bd.compareTo(pr.getPrecio())<=0)
                             productos_s.add(pr);
-                    }
+                    break;
                 case 8:
                     BigDecimal bdM = new BigDecimal(txtBuscar.getText());
-                    for(Producto pr : productos){
+                    for(Producto pr : productos)
                         if(bdM.compareTo(pr.getPrecio())>=0)
                             productos_s.add(pr);
-                    }
+                    break;
                 default:
                     for(Producto pr : productos)
                         productos_s.add(pr);
+                    break;
             }
             datosProductos = new ArrayList<>();
             for(Producto ps : productos_s)
