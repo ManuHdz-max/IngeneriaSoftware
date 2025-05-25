@@ -16,19 +16,20 @@ import org.w3c.dom.Text;
  * @author ericg
  */
 public class DatosTablasProductos {
+    private Producto producto;
     private int idProducto;
     private String nombre;
-    private Text descripcion;
+    private String descripcion;
     private String talla;
     private String color;
     private BigDecimal precio;
     
-    public DatosTablasProductos() throws ParserConfigurationException{
+    public DatosTablasProductos(Producto producto) throws ParserConfigurationException{
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.newDocument();
-        descripcion = doc.createTextNode("");
-        idProducto = -1;
+        descripcion = producto.getDescripcion();
+        idProducto = producto.getIdProducto();
         nombre = new String();
         talla = new String();
         color = new String();
@@ -49,10 +50,10 @@ public class DatosTablasProductos {
         this.nombre = nm;
     }
     
-    public Text getDescripcion(){
+    public String getDescripcion(){
         return descripcion;
     }
-    public void setDescripcion(Text dp){
+    public void setDescripcion(String dp){
         this.descripcion = dp;
     }
     

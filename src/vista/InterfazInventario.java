@@ -8,8 +8,8 @@ import control.AdnDatos;
 import control.ProductoJpaController;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
-import modelo.DatosTablasProductos;
 import modelo.MTablaProducto;
 import modelo.Producto;
 
@@ -21,9 +21,14 @@ public class InterfazInventario extends javax.swing.JDialog {
 
     private ProductoJpaController cProducto;
     private AdnDatos adn;
-    private ArrayList<DatosTablasProductos> datosProductos;
+    private ArrayList<Producto> datosProductos;
     private MTablaProducto modTabProducto;
     private final String SELECTCBM = "Selecciona Filtro";
+    private final String SELECTCBM2 = "Sin Filtro";
+    private final String SELECTCBM3 = "Precio menor a";
+    private final String SELECTCBM4 = "Precio mayor a";
+    private List<Producto> productos;
+    private List<Producto> productos_s;
     
     /**
      * Creates new form InterfazInventario
@@ -33,17 +38,37 @@ public class InterfazInventario extends javax.swing.JDialog {
         initComponents();
         adn = new AdnDatos();
         cProducto = new ProductoJpaController(adn.getEnf());
+        productos = cProducto.findProductoEntities();
         datosProductos = new ArrayList<>();
         modTabProducto = new MTablaProducto(datosProductos);
         lproductos.setModel(modTabProducto);
+        btnBuscar.setEnabled(false);
         cargarProductos();
     }
     
     private void cargarProductos(){
         cbmColumn.removeAllItems();
         cbmColumn.addItem(SELECTCBM);
-        //cbmColumn.addItem();
-        //lproductos.
+        cbmColumn.addItem(SELECTCBM2);
+        for(int i = 0; i<modTabProducto.getColumnCount()-1; i++){
+            cbmColumn.addItem(modTabProducto.getColumnName(i));
+        }
+        cbmColumn.addItem(SELECTCBM3);
+        cbmColumn.addItem(SELECTCBM4);
+        
+        productos_s = new ArrayList<>();
+        for(Producto pr : productos)
+            productos_s.add(pr);
+        datosProductos = new ArrayList<>();
+        for(Producto pr : productos_s){
+            datosProductos.add(pr);
+        }
+        modTabProducto = new MTablaProducto(datosProductos);
+        lproductos.setModel(modTabProducto);
+    }
+    
+    private void cargarFiltro(){
+        //switch()
     }
 
     /**
@@ -77,6 +102,8 @@ public class InterfazInventario extends javax.swing.JDialog {
         txtPrecio = new javax.swing.JTextField();
         btnR = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -106,9 +133,19 @@ public class InterfazInventario extends javax.swing.JDialog {
         });
 
         cbmColumn.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbmColumn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbmColumnActionPerformed(evt);
+            }
+        });
 
         btnBuscar.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout menuInventarioLayout = new javax.swing.GroupLayout(menuInventario);
         menuInventario.setLayout(menuInventarioLayout);
@@ -248,6 +285,28 @@ public class InterfazInventario extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("Registrar", menuP);
 
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
+        jLabel9.setText("Pedidos Pendientes");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(196, 196, 196)
+                .addComponent(jLabel9)
+                .addContainerGap(220, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(jLabel9)
+                .addContainerGap(270, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Pedidos", jPanel1);
+
         jLabel7.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
         jLabel7.setText("Inventario");
 
@@ -304,6 +363,66 @@ public class InterfazInventario extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBuscarActionPerformed
 
+    private void cbmColumnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbmColumnActionPerformed
+        if(cbmColumn.getSelectedItem()!= SELECTCBM)
+            btnBuscar.setEnabled(true);
+        else
+            btnBuscar.setEnabled(false);
+    }//GEN-LAST:event_cbmColumnActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        int opc = cbmColumn.getSelectedIndex();
+        lproductos.setModel(new MTablaProducto(new ArrayList<>()));
+        try{
+            productos_s = new ArrayList<>();
+            switch(opc){
+                case 2:
+                    for(Producto pr : productos)
+                        if(pr.getIdProducto()==Integer.parseInt(txtBuscar.getText())){
+                            productos_s.add(pr); break;}
+                case 3:
+                    for(Producto pr : productos)
+                        if(pr.getNombre().toLowerCase().contains(txtBuscar.getText().toLowerCase()))
+                            productos_s.add(pr);
+                case 4:
+                    for(Producto pr : productos)
+                        if(pr.getDescripcion().toLowerCase().contains(txtBuscar.getText().toLowerCase()))
+                            productos_s.add(pr);
+                case 5:
+                    for(Producto pr : productos)
+                        if(pr.getTalla().toLowerCase().contains(txtBuscar.getText().toLowerCase()))
+                            productos_s.add(pr);
+                case 6:
+                    for(Producto pr : productos)
+                        if(pr.getColor().toLowerCase().contains(txtBuscar.getText().toLowerCase()))
+                            productos_s.add(pr);
+                case 7:
+                    BigDecimal bd = new BigDecimal(txtBuscar.getText());
+                    for(Producto pr : productos){
+                        if(bd.compareTo(pr.getPrecio())<=0)
+                            productos_s.add(pr);
+                    }
+                case 8:
+                    BigDecimal bdM = new BigDecimal(txtBuscar.getText());
+                    for(Producto pr : productos){
+                        if(bdM.compareTo(pr.getPrecio())>=0)
+                            productos_s.add(pr);
+                    }
+                default:
+                    for(Producto pr : productos)
+                        productos_s.add(pr);
+            }
+            datosProductos = new ArrayList<>();
+            for(Producto ps : productos_s)
+                datosProductos.add(ps);
+            modTabProducto  = new MTablaProducto(datosProductos);
+            lproductos.setModel(modTabProducto);
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(this,"Formato de Busqueda invalido");
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -358,6 +477,8 @@ public class InterfazInventario extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable lproductos;

@@ -15,7 +15,7 @@ import org.w3c.dom.Text;
  */
 public class MTablaProducto extends AbstractTableModel{
     
-    private ArrayList<DatosTablasProductos> datosProductos;
+    private ArrayList<Producto> datosProductos;
     private String encabezados [] = {"Identificador","Nombre","Descripcion","Talla","Color","Precio"};
     private Class clasesC [] = {Integer.class,String.class,Text.class,String.class,String.class,BigDecimal.class};
     public MTablaProducto(ArrayList mtp){
