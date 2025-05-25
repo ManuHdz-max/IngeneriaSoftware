@@ -3,7 +3,6 @@
   <persistence-unit name="MiChingonPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>modelo.Proveedor</class>
-    <class>modelo.Ticket</class>
     <class>modelo.Cliente</class>
     <class>modelo.Catalogo</class>
     <class>modelo.Inventario</class>
@@ -11,14 +10,12 @@
     <class>modelo.Producto</class>
     <class>modelo.ValeDevolucion</class>
     <class>modelo.Transaccion</class>
-    <class>modelo.Pedido</class>
     <class>modelo.HistorialCliente</class>
     <class>modelo.DetallePedido</class>
     <class>modelo.Devolucion</class>
     <class>modelo.Reporte</class>
     <class>modelo.Ticket</class>
     <class>modelo.Trabajador</class>
-    <class>modelo.Transaccion</class>
     <class>modelo.UbicacionPedido</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://aws-0-us-east-2.pooler.supabase.com:6543/postgres?user=postgres.smagcfzfmkudwrsnkvsf&amp;password=MiCHingon.com"/>
