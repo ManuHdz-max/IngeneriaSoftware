@@ -343,7 +343,7 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
 
         AreaPago.setColumns(20);
         AreaPago.setRows(5);
-        AreaPago.setText("Subtotal \nIVA\n--------------------------------------------------------------------------------------------------------------------------\nTotal a pagar:");
+        AreaPago.setText("Subtotal \nIVA\t\t\t\t\t\t          16%\n--------------------------------------------------------------------------------------------------------------------------\nTotal a pagar:");
         jScrollPane2.setViewportView(AreaPago);
 
         TablaProducto.setForeground(new java.awt.Color(204, 204, 204));
@@ -457,7 +457,7 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
         Total = Total.setScale(2, RoundingMode.HALF_UP);
         
         AreaPago.setText("Subtotal\t\t\t\t\t\t    $"+subTotal+"\n"
-                + "IVA\t\t\t\t\t\t         16%\n"
+                + "IVA\t\t\t\t\t\t          16%\n"
                 + "--------------------------------------------------------------------------------------------------------------------------\n"
                 + "Total a pagar:\t\t\t\t\t\t   $"+Total);
     }

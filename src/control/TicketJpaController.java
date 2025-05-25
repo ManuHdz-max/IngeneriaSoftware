@@ -19,13 +19,13 @@ import modelo.Trabajador;
 
 /**
  *
- * @author Hp EliteBook
+ * @author magal
  */
-public class TicketJpaController implements Serializable {
-
+public class TicketJpaController {
+    
     public TicketJpaController(EntityManagerFactory emf) {
         this.emf = emf;
-    }
+}
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {

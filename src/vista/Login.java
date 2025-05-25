@@ -79,7 +79,7 @@ private String usuarioElegido;
     public void AbrirInterfazRecepcionista(){
        // Cerrar ventana login
         setVisible(false);
-        new InterfazPedido(null, true, usuarioElegido).setVisible(true); // o false si no quieres que sea modal
+        //new InterfazPed(null, true, usuarioElegido).setVisible(true); // o false si no quieres que sea modal
         // Cuando cierras inventario puedes volver a mostrar login si quieres
         setVisible(true);    
     }

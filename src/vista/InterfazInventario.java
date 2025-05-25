@@ -7,8 +7,10 @@ package vista;
 import control.AdnDatos;
 import control.ProductoJpaController;
 import java.math.BigDecimal;
-import javax.swing.JDialog;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import modelo.DatosTablasProductos;
+import modelo.MTablaProducto;
 import modelo.Producto;
 
 /**
@@ -18,6 +20,9 @@ import modelo.Producto;
 public class InterfazInventario extends javax.swing.JDialog {
     private ProductoJpaController cProducto;
     private AdnDatos adn;
+    private ArrayList<DatosTablasProductos> datosProductos;
+    private MTablaProducto modTabProducto;
+    
     /**
      * Creates new form InterfazInventario
      */
@@ -26,6 +31,9 @@ public class InterfazInventario extends javax.swing.JDialog {
         initComponents();
         adn = new AdnDatos();
         cProducto = new ProductoJpaController(adn.getEnf());
+        datosProductos = new ArrayList<>();
+        modTabProducto = new MTablaProducto(datosProductos);
+        lproductos.setModel(modTabProducto);
         
     }
 
@@ -45,7 +53,7 @@ public class InterfazInventario extends javax.swing.JDialog {
         jLabel8 = new javax.swing.JLabel();
         txtBuscar = new javax.swing.JTextField();
         jComboBox1 = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
         menuP = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -90,7 +98,7 @@ public class InterfazInventario extends javax.swing.JDialog {
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jButton1.setText("Buscar");
+        btnBuscar.setText("Buscar");
 
         javax.swing.GroupLayout menuInventarioLayout = new javax.swing.GroupLayout(menuInventario);
         menuInventario.setLayout(menuInventarioLayout);
@@ -109,18 +117,18 @@ public class InterfazInventario extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)))
+                        .addComponent(btnBuscar)))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
         menuInventarioLayout.setVerticalGroup(
             menuInventarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, menuInventarioLayout.createSequentialGroup()
-                .addContainerGap(51, Short.MAX_VALUE)
+                .addContainerGap(48, Short.MAX_VALUE)
                 .addGroup(menuInventarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(btnBuscar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(scrollProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16))
@@ -265,7 +273,8 @@ public class InterfazInventario extends javax.swing.JDialog {
 
     private void btnRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRActionPerformed
         Producto p = new Producto();
-        if(txtNombre.getText().isEmpty() && txtDescripcion.getText().isEmpty() && txtTalla.getText().isEmpty()){
+        if(!txtNombre.getText().trim().isEmpty() && !txtDescripcion.getText().trim().isEmpty() && !txtTalla.getText().trim().isEmpty()
+                && !txtColor.getText().trim().isEmpty()){
             p.setNombre((String)txtNombre.getText());
             p.setDescripcion(txtDescripcion.getText());
             p.setTalla((String)txtTalla.getText());
@@ -328,8 +337,8 @@ public class InterfazInventario extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnR;
-    private javax.swing.JButton jButton1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

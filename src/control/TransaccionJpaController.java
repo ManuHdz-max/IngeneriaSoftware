@@ -19,13 +19,13 @@ import modelo.Transaccion;
 
 /**
  *
- * @author Hp EliteBook
+ * @author magal
  */
-public class TransaccionJpaController implements Serializable {
-
+public class TransaccionJpaController {
+    
     public TransaccionJpaController(EntityManagerFactory emf) {
         this.emf = emf;
-    }
+}
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {

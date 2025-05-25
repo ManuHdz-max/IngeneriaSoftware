@@ -19,13 +19,13 @@ import modelo.UbicacionPedido;
 
 /**
  *
- * @author Hp EliteBook
+ * @author magal
  */
-public class UbicacionPedidoJpaController implements Serializable {
-
+public class UbicacionPedidoJpaController {
+    
     public UbicacionPedidoJpaController(EntityManagerFactory emf) {
         this.emf = emf;
-    }
+}
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {

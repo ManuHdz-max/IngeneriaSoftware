@@ -18,13 +18,13 @@ import modelo.Producto;
 
 /**
  *
- * @author Hp EliteBook
+ * @author magal
  */
-public class InventarioJpaController implements Serializable {
-
+public class InventarioJpaController {
+    
     public InventarioJpaController(EntityManagerFactory emf) {
         this.emf = emf;
-    }
+}
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {

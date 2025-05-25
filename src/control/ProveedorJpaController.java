@@ -20,13 +20,13 @@ import modelo.Proveedor;
 
 /**
  *
- * @author Hp EliteBook
+ * @author magal
  */
-public class ProveedorJpaController implements Serializable {
-
+public class ProveedorJpaController {
+    
     public ProveedorJpaController(EntityManagerFactory emf) {
         this.emf = emf;
-    }
+}
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {
