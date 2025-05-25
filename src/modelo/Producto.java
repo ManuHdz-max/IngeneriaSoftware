@@ -41,9 +41,6 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Producto.findByFechaRegistro", query = "SELECT p FROM Producto p WHERE p.fechaRegistro = :fechaRegistro")})
 public class Producto implements Serializable {
 
-    @OneToMany(mappedBy = "idProducto")
-    private Collection<DetallePedido> detallePedidoCollection;
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,6 +67,8 @@ public class Producto implements Serializable {
     private Collection<Catalogo> catalogoCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProducto")
     private Collection<Inventario> inventarioCollection;
+    @OneToMany(mappedBy = "idProducto")
+    private Collection<DetallePedido> detallePedidoCollection;
 
     public Producto() {
     }
@@ -188,5 +187,5 @@ public class Producto implements Serializable {
     public void setDetallePedidoCollection(Collection<DetallePedido> detallePedidoCollection) {
         this.detallePedidoCollection = detallePedidoCollection;
     }
-    
+
 }
