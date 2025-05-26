@@ -109,7 +109,7 @@ public class InterfazPed extends javax.swing.JDialog {
     }
 
     public void cargarPedidos() throws Exception {
-
+       pedidos=cPedido.findPedidoEntities();
         int numfilas = mt.getRowCount();
         for (int i = numfilas - 1; i >= 0; i--) {
             mt.removeRow(i);
@@ -125,7 +125,7 @@ public class InterfazPed extends javax.swing.JDialog {
             mt.addRow(fila);
             tPedidos.setModel(mt);
             String text = "Id.Pedido:" + pbusqueda.getIdPedido() + nl + " Cliente:" + pbusqueda.getIdCliente().getNombre() + " " + pbusqueda.getIdCliente().getApellido() + nl
-                    + " Fecha elaboracion: " + pbusqueda.getFechaPedido()
+                    + " Fecha elaboracion: " + formato.format(pbusqueda.getFechaPedido())
                     + " Fecha estimada de entrega: " + formato.format(pbusqueda.getFechaEntregaEstimada()) + nl + "Estado: " + pbusqueda.getEstado()
                     + nl + buscaProductos(pbusqueda) + nl + " TOTAL: " + pbusqueda.getTotal();
             detallesText.setText(text);
@@ -284,6 +284,11 @@ public class InterfazPed extends javax.swing.JDialog {
         tallaCB = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
         cantidadSP = new javax.swing.JSpinner();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel12 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jButton6 = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -628,6 +633,52 @@ public class InterfazPed extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("Registro", jPanel4);
 
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        jLabel12.setText("Consultar la ubicacion del pedido");
+
+        jTextField1.setText("jTextField1");
+
+        jButton6.setText("Consultar ubicacion");
+
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        jLabel13.setText("Ingresa el identificador del pedido:");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(158, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addComponent(jLabel12)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel13)
+                            .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(438, Short.MAX_VALUE))))
+        );
+
+        jTabbedPane1.addTab("Ubicacion", jPanel2);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -925,8 +976,8 @@ public class InterfazPed extends javax.swing.JDialog {
                         nuevoP.setIdCliente(client);
                         nuevoP.setFechaPedido(fechaActual);
                         nuevoP.setFechaEntregaEstimada(fechaEntre);//FECHA SELECCIONADA EN CALENDARIO
-                        nuevoP.setEstado("Pendiente");//para nuevo pedido
-
+                      nuevoP.setEstado("pendiente");//para nuevo pedido con minuscula
+                       
                         cPedido.create(nuevoP);
                         NuevoP = nuevoP;
                         System.out.println("Pedido nuevo registrado" + NuevoP.getIdPedido());
@@ -1044,10 +1095,13 @@ public class InterfazPed extends javax.swing.JDialog {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private com.toedter.calendar.JCalendar jCalendar1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1057,11 +1111,13 @@ public class InterfazPed extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JComboBox<String> productoCB;
     private javax.swing.JTable tPedidos;
     private javax.swing.JComboBox<String> tallaCB;
