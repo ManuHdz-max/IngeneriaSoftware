@@ -4,7 +4,6 @@
  */
 package vista;
 
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import control.AdmDatos;
 import control.TrabajadorJpaController;
 import java.awt.Image;
