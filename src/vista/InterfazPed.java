@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.management.loading.MLet;
 import javax.swing.SpinnerNumberModel;
 import modelo.Cliente;
 import modelo.DetallePedido;
@@ -61,8 +62,8 @@ public class InterfazPed extends javax.swing.JDialog {
     private Date fechaEla = new Date();
     private Date fechaEntre = new Date();
     private SimpleDateFormat formato = new SimpleDateFormat("dd 'de' MMM 'de' yyy ");
-
-    //combos
+    private boolean confirmaFecha=false;
+    //combos cargar registrar
     private List<Cliente> clientes;
     private List<Producto> productos;
     private int selecPro = 0;
@@ -74,7 +75,7 @@ public class InterfazPed extends javax.swing.JDialog {
     private InventarioJpaController cInventario;
     private List<Inventario> inventario;
     //guardar detalles externos
-   // private Map<Pedido, String> descripciones = new HashMap<>();
+    // private Map<Pedido, String> descripciones = new HashMap<>();
     //valores para calcular precios
     private BigDecimal costoProductos = BigDecimal.ZERO;
     private BigDecimal totalMonto = BigDecimal.ZERO;
@@ -84,7 +85,7 @@ public class InterfazPed extends javax.swing.JDialog {
         initComponents();
         emf = Persistence.createEntityManagerFactory("MiChingonPU");
         EntityManagerFactory emf2 = Persistence.createEntityManagerFactory("MiChingonPU");
-        cPedido = new PedidoJpaController(emf2);
+        cPedido = new PedidoJpaController(emf);
         cDetalleP = new DetallePedidoJpaController(emf);
         cCliente = new ClienteJpaController(emf);
         cProducto = new ProductoJpaController(emf);
@@ -94,7 +95,7 @@ public class InterfazPed extends javax.swing.JDialog {
         productos = cProducto.findProductoEntities();
         detalles = cDetalleP.findDetallePedidoEntities();
         inventario = cInventario.findInventarioEntities();
-        mt = new DefaultTableModel(new Object[]{"Id Pedido", "Cliente", "Fecha de realización", "Productos", "Total"}, 0);
+        mt = new DefaultTableModel(new Object[]{"Id Pedido", "Cliente", "Fecha de entrega", "Productos", "Estado", "Total"}, 0);
 
         pedidos = cPedido.findPedidoEntities();
         cantidadSP.setModel(Msp);
@@ -102,6 +103,7 @@ public class InterfazPed extends javax.swing.JDialog {
         calendarioSelec.setEnabled(false);
         Bconfi.setEnabled(false);
         impL.setText("");
+        Bcancelar.setEnabled(false);
         cargarCB();
 
     }
@@ -116,21 +118,24 @@ public class InterfazPed extends javax.swing.JDialog {
             Object[] fila = {
                 pbusqueda.getIdPedido(),
                 pbusqueda.getIdCliente().getNombre() + " " + pbusqueda.getIdCliente().getApellido(),
-                convertirFecha(pbusqueda.getFechaPedido()),
+                formato.format(pbusqueda.getFechaEntregaEstimada()), pbusqueda.getEstado(),
                 buscaProductos(pbusqueda),//productos
                 pbusqueda.getTotal()
             };
             mt.addRow(fila);
             tPedidos.setModel(mt);
             String text = "Id.Pedido:" + pbusqueda.getIdPedido() + nl + " Cliente:" + pbusqueda.getIdCliente().getNombre() + " " + pbusqueda.getIdCliente().getApellido() + nl
-                    + buscaProductos(pbusqueda) + nl + " TOTAL: " + pbusqueda.getTotal();
+                    + " Fecha elaboracion: " + pbusqueda.getFechaPedido()
+                    + " Fecha estimada de entrega: " + formato.format(pbusqueda.getFechaEntregaEstimada()) + nl + "Estado: " + pbusqueda.getEstado()
+                    + nl + buscaProductos(pbusqueda) + nl + " TOTAL: " + pbusqueda.getTotal();
             detallesText.setText(text);
+            banderaEncontrado = false;
         } else {
             for (Pedido p : pedidos) {
                 Object[] fila = {
                     p.getIdPedido(),
                     p.getIdCliente().getNombre() + " " + p.getIdCliente().getApellido(),
-                    buscaProductosMuestra(p),
+                    convertirFecha(p.getFechaEntregaEstimada()), buscaProductosMuestra(p), p.getEstado(),
                     p.getTotal()
                 };
                 mt.addRow(fila);
@@ -195,7 +200,6 @@ public class InterfazPed extends javax.swing.JDialog {
                 precioP = totalTem.floatValue();
                 totalPedido += precioP;
                 listaP += "Producto: " + de.getIdProducto().getNombre() + " Cantidad: " + de.getCantidad() + " Precio Individual: " + de.getIdProducto().getPrecio() + nl
-                        
                         + " Subtotal:" + precioP + nl;
             }
         }
@@ -233,10 +237,9 @@ public class InterfazPed extends javax.swing.JDialog {
             }
         }
         //guardar total en pedido
-        p.setTotal(new BigDecimal(Float.toString(totalPedido)));
-        cPedido.edit(p);
-        return listaP;
+       
 
+        return listaP;
     }
 
     @SuppressWarnings("unchecked")
@@ -260,6 +263,8 @@ public class InterfazPed extends javax.swing.JDialog {
         jLabel11 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         impL = new javax.swing.JLabel();
+        Bcancelar = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -328,6 +333,11 @@ public class InterfazPed extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tPedidos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tPedidosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tPedidos);
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
@@ -350,25 +360,44 @@ public class InterfazPed extends javax.swing.JDialog {
 
         impL.setText("Imprimiendo....");
 
+        Bcancelar.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        Bcancelar.setText("Cancelar pedido ");
+        Bcancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BcancelarActionPerformed(evt);
+            }
+        });
+
+        jButton4.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        jButton4.setText("Actualizar tabla");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(TextIdP, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(81, 81, 81)
+                        .addComponent(bBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Bcancelar)
+                        .addGap(24, 24, 24))))
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(93, 93, 93)
                         .addComponent(txtResult, javax.swing.GroupLayout.PREFERRED_SIZE, 527, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(TextIdP, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(81, 81, 81)
-                                .addComponent(bBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 798, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -378,10 +407,13 @@ public class InterfazPed extends javax.swing.JDialog {
                             .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 555, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(88, 88, 88)
+                                .addGap(43, 43, 43)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(impL, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(21, 21, 21)))))))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -393,7 +425,8 @@ public class InterfazPed extends javax.swing.JDialog {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(TextIdP, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(bBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Bcancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(txtResult)
                 .addGap(18, 18, 18)
@@ -401,10 +434,12 @@ public class InterfazPed extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addComponent(jLabel11)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(impL))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
@@ -505,13 +540,15 @@ public class InterfazPed extends javax.swing.JDialog {
                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                         .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
+                        .addGap(43, 43, 43)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(textFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(65, 65, 65)
+                                .addGap(49, 49, 49)
                                 .addComponent(Bconfi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(calendarioSelec, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(calendarioSelec, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(0, 64, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -629,7 +666,7 @@ public class InterfazPed extends javax.swing.JDialog {
         detallesText.setText("");
         String idbusqueda = TextIdP.getText();
         if (!idbusqueda.isEmpty()) {
-            pedidos=cPedido.findPedidoEntities();
+            pedidos = cPedido.findPedidoEntities();
             for (Pedido p : pedidos) {
                 if (p.getIdPedido().toString().equals(idbusqueda)) {
                     pbusqueda = p;
@@ -705,6 +742,7 @@ public class InterfazPed extends javax.swing.JDialog {
     private void BconfiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BconfiActionPerformed
         // TODO add your handling code here:
         guardarFecha();
+        confirmaFecha=true;
     }//GEN-LAST:event_BconfiActionPerformed
 
     private void calendarioSelecMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_calendarioSelecMouseClicked
@@ -767,11 +805,11 @@ public class InterfazPed extends javax.swing.JDialog {
                     JOptionPane.WARNING_MESSAGE
             );
             //guardarTotal
-           
+
             try {
-                 NuevoP.setTotal(totalMonto);
+                NuevoP.setTotal(totalMonto);
                 cPedido.edit(NuevoP);
-                System.out.println(totalMonto+"Total registrado de pedido"+NuevoP.getIdPedido());
+                System.out.println(totalMonto + "Total registrado de pedido" + NuevoP.getIdPedido());
             } catch (Exception ex) {
                 Logger.getLogger(InterfazPed.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -782,6 +820,67 @@ public class InterfazPed extends javax.swing.JDialog {
         costoProductos = BigDecimal.ZERO;
         cargarCB();
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void BcancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BcancelarActionPerformed
+        // TODO add your handling code here:
+        //cancelacion
+        int filaS = tPedidos.getSelectedRow();
+
+        if (filaS >= 0) {
+            int idPed = Integer.parseInt(mt.getValueAt(filaS, 0).toString());
+            Pedido ped = buscaPedidoTabla(idPed);
+            int resp = JOptionPane.showConfirmDialog(
+                    null,
+                    "¿Cancelar el pedido?"+ped.getIdPedido(),
+                    "Aviso",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+            if (resp == JOptionPane.YES_OPTION) {
+
+                try {
+                    ped.setEstado("cancelado");
+                    cPedido.edit(ped);
+                    System.out.println("cancelado pedido " + ped.getIdCliente());
+                } catch (NonexistentEntityException ex) {
+                    Logger.getLogger(InterfazPed.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(InterfazPed.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Se evito la cancelacion",
+                        "Advertencia",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
+            }
+        } else {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Selecciona una fila",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
+    }//GEN-LAST:event_BcancelarActionPerformed
+
+    private void tPedidosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tPedidosMouseClicked
+        // TODO add your handling code here:
+        Bcancelar.setEnabled(true);
+
+
+    }//GEN-LAST:event_tPedidosMouseClicked
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        try {
+            // TODO add your handling code here:
+            cargarPedidos();
+        } catch (Exception ex) {
+            Logger.getLogger(InterfazPed.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
     public void guardarFecha() {
 
         fechaEntre = calendarioSelec.getDate();
@@ -791,10 +890,9 @@ public class InterfazPed extends javax.swing.JDialog {
     }
 
     public void registrarPedido() throws NonexistentEntityException, Exception {//agrega a detalle
-        if (clienteCB.getSelectedIndex() != 0 && productoCB.getSelectedIndex() != 0 && fechaEla != null && fechaEntre != null && (Integer) cantidadSP.getValue() != 0) {
+        if (clienteCB.getSelectedIndex() != 0 && productoCB.getSelectedIndex() != 0 && fechaEla != null && fechaEntre != null && (Integer) cantidadSP.getValue() !=0 && confirmaFecha  )  {
 
             if (tallaCB.getSelectedIndex() >= 0) {
-                costoProductos = BigDecimal.ZERO;
 
                 Cliente client = clientes.get(clienteCB.getSelectedIndex() - 1);
                 Date fechaActual = new Date();//fecha de generacion de pedido actual
@@ -802,10 +900,10 @@ public class InterfazPed extends javax.swing.JDialog {
                 Producto prod = productos.get(productoCB.getSelectedIndex() - 1);
                 BigInteger cant = new BigInteger(cantidadSP.getValue().toString());
                 costoProductos = (prod.getPrecio()).multiply(new BigDecimal(cant));
-               
-                totalMonto=totalMonto.add(costoProductos);
-                 System.out.println(costoProductos+" cantidad"+cant+ "total:"+totalMonto);
-            
+
+                totalMonto = totalMonto.add(costoProductos);
+                System.out.println(costoProductos + " cantidad" + cant + "total:" + totalMonto);
+
                 String talla = tallaCB.getSelectedItem().toString();
                 String color = colorCB.getSelectedItem().toString();
                 String msj = "Cliente: " + client.getNombre() + " " + client.getApellido() + " Poducto: " + prod.getNombre() + "\n"
@@ -827,19 +925,17 @@ public class InterfazPed extends javax.swing.JDialog {
                         nuevoP.setIdCliente(client);
                         nuevoP.setFechaPedido(fechaActual);
                         nuevoP.setFechaEntregaEstimada(fechaEntre);//FECHA SELECCIONADA EN CALENDARIO
-                        nuevoP.setEstado("pendiente");//para nuevo pedido
-                        
-                         cPedido.create(nuevoP);
-                         NuevoP = nuevoP;
-                         System.out.println("Pedido nuevo registrado"+NuevoP.getIdPedido());
+                        nuevoP.setEstado("Pendiente");//para nuevo pedido
+
+                        cPedido.create(nuevoP);
+                        NuevoP = nuevoP;
+                        System.out.println("Pedido nuevo registrado" + NuevoP.getIdPedido());
                     }
                     DetallePedido producto = new DetallePedido();
                     producto.setIdPedido(NuevoP);
                     producto.setIdProducto(prod);
                     producto.setCantidad(cant);
-                    //guardar en programa
-                    // descripciones.put(NuevoP, "Color: "+color+" Talla:"+talla);
-                    System.out.println("Producto agregado a pedido ");
+                    System.out.println("detalle de Producto agregado ");
 
                 } else {
                     cargarCB();
@@ -854,6 +950,7 @@ public class InterfazPed extends javax.swing.JDialog {
                         JOptionPane.WARNING_MESSAGE
                 );
             }
+            confirmaFecha=false;
 
         } else {
             JOptionPane.showMessageDialog(
@@ -863,6 +960,16 @@ public class InterfazPed extends javax.swing.JDialog {
                     JOptionPane.WARNING_MESSAGE
             );
         }
+    }
+
+    private Pedido buscaPedidoTabla(int id) {
+        pedidos=cPedido.findPedidoEntities();
+        for (Pedido p : pedidos) {
+            if (id == p.getIdPedido()) {
+                return p;
+            }
+        }
+        return null;
     }
 
     /**
@@ -922,6 +1029,7 @@ public class InterfazPed extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Bcancelar;
     private javax.swing.JButton Bconfi;
     private javax.swing.JTextField TextIdP;
     private javax.swing.JButton bBuscar;
@@ -934,6 +1042,7 @@ public class InterfazPed extends javax.swing.JDialog {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private com.toedter.calendar.JCalendar jCalendar1;
     private javax.swing.JLabel jLabel1;
