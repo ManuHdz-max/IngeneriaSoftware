@@ -74,7 +74,7 @@ public class InterfazPed extends javax.swing.JDialog {
     private InventarioJpaController cInventario;
     private List<Inventario> inventario;
     //guardar detalles externos
-    private Map<Pedido, String> descripciones = new HashMap<>();
+   // private Map<Pedido, String> descripciones = new HashMap<>();
     //valores para calcular precios
     private BigDecimal costoProductos = BigDecimal.ZERO;
     private BigDecimal totalMonto = BigDecimal.ZERO;
@@ -195,7 +195,7 @@ public class InterfazPed extends javax.swing.JDialog {
                 precioP = totalTem.floatValue();
                 totalPedido += precioP;
                 listaP += "Producto: " + de.getIdProducto().getNombre() + " Cantidad: " + de.getCantidad() + " Precio Individual: " + de.getIdProducto().getPrecio() + nl
-                        + descripciones.get(p)
+                        
                         + " Subtotal:" + precioP + nl;
             }
         }
@@ -629,6 +629,7 @@ public class InterfazPed extends javax.swing.JDialog {
         detallesText.setText("");
         String idbusqueda = TextIdP.getText();
         if (!idbusqueda.isEmpty()) {
+            pedidos=cPedido.findPedidoEntities();
             for (Pedido p : pedidos) {
                 if (p.getIdPedido().toString().equals(idbusqueda)) {
                     pbusqueda = p;
@@ -656,6 +657,11 @@ public class InterfazPed extends javax.swing.JDialog {
                     "Advertencia",
                     JOptionPane.WARNING_MESSAGE
             );
+            try {
+                cargarPedidos();
+            } catch (Exception ex) {
+                Logger.getLogger(InterfazPed.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
 
@@ -761,10 +767,11 @@ public class InterfazPed extends javax.swing.JDialog {
                     JOptionPane.WARNING_MESSAGE
             );
             //guardarTotal
-            NuevoP.setTotal(totalMonto);
+           
             try {
+                 NuevoP.setTotal(totalMonto);
                 cPedido.edit(NuevoP);
-                System.out.println("Total registrado");
+                System.out.println(totalMonto+"Total registrado de pedido"+NuevoP.getIdPedido());
             } catch (Exception ex) {
                 Logger.getLogger(InterfazPed.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -794,9 +801,11 @@ public class InterfazPed extends javax.swing.JDialog {
 
                 Producto prod = productos.get(productoCB.getSelectedIndex() - 1);
                 BigInteger cant = new BigInteger(cantidadSP.getValue().toString());
-                costoProductos = prod.getPrecio().multiply(new BigDecimal(cant));
-                totalMonto.add(costoProductos);
-
+                costoProductos = (prod.getPrecio()).multiply(new BigDecimal(cant));
+               
+                totalMonto=totalMonto.add(costoProductos);
+                 System.out.println(costoProductos+" cantidad"+cant+ "total:"+totalMonto);
+            
                 String talla = tallaCB.getSelectedItem().toString();
                 String color = colorCB.getSelectedItem().toString();
                 String msj = "Cliente: " + client.getNombre() + " " + client.getApellido() + " Poducto: " + prod.getNombre() + "\n"
@@ -818,10 +827,11 @@ public class InterfazPed extends javax.swing.JDialog {
                         nuevoP.setIdCliente(client);
                         nuevoP.setFechaPedido(fechaActual);
                         nuevoP.setFechaEntregaEstimada(fechaEntre);//FECHA SELECCIONADA EN CALENDARIO
-                        nuevoP.setEstado("Pendiente");//para nuevo pedido
+                        nuevoP.setEstado("pendiente");//para nuevo pedido
                         
-                        NuevoP = nuevoP;
-                        cPedido.create(NuevoP);
+                         cPedido.create(nuevoP);
+                         NuevoP = nuevoP;
+                         System.out.println("Pedido nuevo registrado"+NuevoP.getIdPedido());
                     }
                     DetallePedido producto = new DetallePedido();
                     producto.setIdPedido(NuevoP);
