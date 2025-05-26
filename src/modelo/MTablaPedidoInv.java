@@ -44,10 +44,6 @@ public class MTablaPedidoInv extends AbstractTableModel{
         return clasesC[c];
     }
     
-    public Pedido getPedido(int r){
-        return datosPedido.get(r).getPed();
-    }
-    
     @Override
     public Object getValueAt(int r, int c) {
         switch(c){
