@@ -34,4 +34,7 @@ public class DatosTablaPedidoInv {
     public String getEstado(){
         return pedido.getEstado();
     }
+    public Pedido getPed(){
+        return pedido;
+    }
 }
