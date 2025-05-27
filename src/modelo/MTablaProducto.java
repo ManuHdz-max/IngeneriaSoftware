@@ -44,6 +44,9 @@ public class MTablaProducto extends AbstractTableModel{
         return clasesC[c];
     }
 
+    public Producto getProducto(int r){
+        return datosProductos.get(r);
+    }
     @Override
     public Object getValueAt(int r, int c) {
         switch(c){
