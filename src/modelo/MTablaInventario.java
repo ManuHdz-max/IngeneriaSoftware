@@ -42,6 +42,9 @@ public class MTablaInventario extends AbstractTableModel{
     public Class getColumnClass(int c){
         return clasesC[c];
     }
+    public Inventario getInventario(int r){
+        return datosInventario.get(r).getObjInventatio();
+    }
     
     @Override
     public Object getValueAt(int r, int c) {
