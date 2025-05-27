@@ -58,6 +58,7 @@ public class InterfazInventario extends javax.swing.JDialog {
     private List<Pedido> pedidos_s;
     private List<Inventario> inventarios;
     private List<Inventario> inventarios_s;
+    private boolean confirmacion;
     
     /**
      * Creates new form InterfazInventario
@@ -77,6 +78,8 @@ public class InterfazInventario extends javax.swing.JDialog {
         lproductos.setModel(modTabProducto);
         btnBuscar.setEnabled(false);
         cargarProductos();
+        
+        confirmacion = false;
         
         /*datosPedidos  = new ArrayList<>();
         modTabPedido = new MTablaPedidoInv(datosPedidos);
@@ -225,6 +228,10 @@ public class InterfazInventario extends javax.swing.JDialog {
         jLabel32 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        Confirmacion = new javax.swing.JDialog();
+        jLabel33 = new javax.swing.JLabel();
+        btnCancelarC = new javax.swing.JButton();
+        btnAceptarC = new javax.swing.JButton();
         tabPanel = new javax.swing.JTabbedPane();
         menuInventario = new javax.swing.JPanel();
         scrollProductos = new javax.swing.JScrollPane();
@@ -590,6 +597,50 @@ public class InterfazInventario extends javax.swing.JDialog {
                     .addComponent(jButton9)
                     .addComponent(jButton10))
                 .addGap(15, 15, 15))
+        );
+
+        jLabel33.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
+        jLabel33.setText("¿Desea eliminar el elemento seleccionado?");
+
+        btnCancelarC.setText("Cancelar");
+        btnCancelarC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarCActionPerformed(evt);
+            }
+        });
+
+        btnAceptarC.setText("Aceptar");
+        btnAceptarC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceptarCActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout ConfirmacionLayout = new javax.swing.GroupLayout(Confirmacion.getContentPane());
+        Confirmacion.getContentPane().setLayout(ConfirmacionLayout);
+        ConfirmacionLayout.setHorizontalGroup(
+            ConfirmacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ConfirmacionLayout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(jLabel33)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(ConfirmacionLayout.createSequentialGroup()
+                .addGap(125, 125, 125)
+                .addComponent(btnCancelarC)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAceptarC)
+                .addGap(125, 125, 125))
+        );
+        ConfirmacionLayout.setVerticalGroup(
+            ConfirmacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ConfirmacionLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(jLabel33)
+                .addGap(18, 18, 18)
+                .addGroup(ConfirmacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAceptarC)
+                    .addComponent(btnCancelarC))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -1276,12 +1327,24 @@ public class InterfazInventario extends javax.swing.JDialog {
     }//GEN-LAST:event_btnEliminarPPActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        Producto pe = modTabProducto.getProducto(lproductos.getSelectedRow());
+        //Producto pe = modTabProducto.getProducto(lproductos.getSelectedRow());
+        Confirmacion.setVisible(true);
+        Confirmacion.setSize(400,300);
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnEliminarSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarSPActionPerformed
         Pedido pe = modTabPedido.getPedido(lpedidos.getSelectedRow());
     }//GEN-LAST:event_btnEliminarSPActionPerformed
+
+    private void btnAceptarCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarCActionPerformed
+        confirmacion=true;
+        Confirmacion.dispose();
+    }//GEN-LAST:event_btnAceptarCActionPerformed
+
+    private void btnCancelarCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarCActionPerformed
+        confirmacion=false;
+        Confirmacion.dispose();
+    }//GEN-LAST:event_btnCancelarCActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1328,12 +1391,15 @@ public class InterfazInventario extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog AgregarProducto;
     private javax.swing.JDialog AgregarStock;
+    private javax.swing.JDialog Confirmacion;
     private javax.swing.JDialog EditarPedido;
     private javax.swing.JDialog EditarProducto;
+    private javax.swing.JButton btnAceptarC;
     private javax.swing.JButton btnAumentarSP;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnBuscarPP;
     private javax.swing.JButton btnBuscarSP;
+    private javax.swing.JButton btnCancelarC;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnEliminarPP;
     private javax.swing.JButton btnEliminarSP;
@@ -1376,6 +1442,7 @@ public class InterfazInventario extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
