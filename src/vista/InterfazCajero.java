@@ -12,9 +12,7 @@ import java.awt.Color;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -27,29 +25,42 @@ import modelo.Producto;
  * @author Hp EliteBook
  */
 public class InterfazCajero extends javax.swing.JDialog {
-private Producto producto;
-private List<Producto> productos;
-private ProductoJpaController cProducto;
-private List<Producto> productosComprados;
-private ArrayList<DatosTablaVenta> datosVentas = new ArrayList<>();
-private MTablaVenta modTabVenta;
-private BigDecimal Total= new BigDecimal(0), subTotal = new BigDecimal(0);
-private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
-
-
+    private Producto producto;
+    private List<Producto> productos;
+    private List<Producto> productosComprados = new ArrayList<>();
+    private ProductoJpaController cProducto;
+    private ArrayList<DatosTablaVenta> datosVentas = new ArrayList<>();
+    private MTablaVenta modTabVenta;
+    private BigDecimal Total= new BigDecimal(0), subTotal = new BigDecimal(0), monto = new BigDecimal(0), cantidadPagada = new BigDecimal(0);
+    private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
+    private String TipoPago, nombreCajero; 
+    private List<String> tiposPagos = new ArrayList<>();
+    private List<BigDecimal> pagosParciales = new ArrayList<>() ;
+     private BigDecimal efectivo = new BigDecimal(0);
+    private BigDecimal cupon = new BigDecimal(0);
+    private BigDecimal credito = new BigDecimal(0);
+    private BigDecimal debito = new BigDecimal(0);
+    private BigDecimal vale = new BigDecimal(0);
+    private BigDecimal totalVentas = new BigDecimal(0);
+    private int Retiros = 0;
+    
     /**
      * Creates new form InterfazCajero
      */
-    public InterfazCajero(java.awt.Frame parent, boolean modal) {
+    public InterfazCajero(java.awt.Frame parent, boolean modal, String usuarioElegido) {
         super(parent, modal);
         initComponents();
         cProducto = new ProductoJpaController(AdmDatos.getEntityManagerFactory());
         productos = cProducto.findProductoEntities();
-        
+        nombreCajero = usuarioElegido;
+        efectivo = efectivo.setScale(2, RoundingMode.HALF_UP);
+        cupon = cupon.setScale(2, RoundingMode.HALF_UP);
+        credito = credito.setScale(2, RoundingMode.HALF_UP);
+        debito = debito.setScale(2, RoundingMode.HALF_UP);
+        vale = vale.setScale(2, RoundingMode.HALF_UP);
         inabilitar();
         TablaLista();
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -76,12 +87,12 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
         ValeVenta = new javax.swing.JButton();
         PanelSupervisor = new javax.swing.JPanel();
         ReporteParcial = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
+        ReporteFinal = new javax.swing.JButton();
         jButton13 = new javax.swing.JButton();
         SalirSupervisor = new javax.swing.JButton();
         PanelRetiro = new javax.swing.JPanel();
-        jButton15 = new javax.swing.JButton();
-        jButton16 = new javax.swing.JButton();
+        AgregarRetiro = new javax.swing.JButton();
+        ConsultarRetiro = new javax.swing.JButton();
         RegresarRetiro = new javax.swing.JButton();
         PanelDetalles = new javax.swing.JPanel();
         PanelDetalleVentas = new javax.swing.JPanel();
@@ -90,6 +101,23 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
         jScrollPane1 = new javax.swing.JScrollPane();
         TablaProducto = new javax.swing.JTable();
         PanelDetalleRetiros = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        TMil = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        TQuinientos = new javax.swing.JTextField();
+        TDoscientos = new javax.swing.JTextField();
+        TCien = new javax.swing.JTextField();
+        TCincuenta = new javax.swing.JTextField();
+        TVeinte = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        LTotalRetiro = new javax.swing.JLabel();
+        GenerarPedido = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -174,10 +202,25 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
         });
 
         DebitoVenta.setText("Targeta de Debito");
+        DebitoVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DebitoVentaActionPerformed(evt);
+            }
+        });
 
         CreditoVenta.setText("Targeta de Credito");
+        CreditoVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CreditoVentaActionPerformed(evt);
+            }
+        });
 
         CuponVenta.setText("Cupon");
+        CuponVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CuponVentaActionPerformed(evt);
+            }
+        });
 
         SalirVenta.setText("Regresar");
         SalirVenta.addActionListener(new java.awt.event.ActionListener() {
@@ -187,6 +230,11 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
         });
 
         ValeVenta.setText("Vale por Devolucion");
+        ValeVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ValeVentaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout PanelVentaLayout = new javax.swing.GroupLayout(PanelVenta);
         PanelVenta.setLayout(PanelVentaLayout);
@@ -231,11 +279,11 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
             }
         });
 
-        jButton12.setFont(new java.awt.Font("Roboto Black", 0, 14)); // NOI18N
-        jButton12.setText("Reporte Final");
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
+        ReporteFinal.setFont(new java.awt.Font("Roboto Black", 0, 14)); // NOI18N
+        ReporteFinal.setText("Reporte Final");
+        ReporteFinal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
+                ReporteFinalActionPerformed(evt);
             }
         });
 
@@ -263,7 +311,7 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
                 .addContainerGap()
                 .addGroup(PanelSupervisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ReporteParcial, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ReporteFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SalirSupervisor, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -274,7 +322,7 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
                 .addContainerGap()
                 .addComponent(ReporteParcial, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ReporteFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -284,19 +332,19 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
 
         PanelBotones.add(PanelSupervisor, "PanelSupervisor");
 
-        jButton15.setFont(new java.awt.Font("Roboto Black", 0, 14)); // NOI18N
-        jButton15.setText("Agregar Retiro");
-        jButton15.addActionListener(new java.awt.event.ActionListener() {
+        AgregarRetiro.setFont(new java.awt.Font("Roboto Black", 0, 14)); // NOI18N
+        AgregarRetiro.setText("Generar Retiro");
+        AgregarRetiro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton15ActionPerformed(evt);
+                AgregarRetiroActionPerformed(evt);
             }
         });
 
-        jButton16.setFont(new java.awt.Font("Roboto Black", 0, 14)); // NOI18N
-        jButton16.setText("Consultar Retiros");
-        jButton16.addActionListener(new java.awt.event.ActionListener() {
+        ConsultarRetiro.setFont(new java.awt.Font("Roboto Black", 0, 14)); // NOI18N
+        ConsultarRetiro.setText("Consultar Retiros");
+        ConsultarRetiro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton16ActionPerformed(evt);
+                ConsultarRetiroActionPerformed(evt);
             }
         });
 
@@ -317,10 +365,10 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
                 .addGroup(PanelRetiroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelRetiroLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(ConsultarRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(PanelRetiroLayout.createSequentialGroup()
                         .addGroup(PanelRetiroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(AgregarRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(RegresarRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -329,9 +377,9 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
             PanelRetiroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelRetiroLayout.createSequentialGroup()
                 .addGap(43, 43, 43)
-                .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(AgregarRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ConsultarRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(RegresarRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(59, Short.MAX_VALUE))
@@ -343,7 +391,7 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
 
         AreaPago.setColumns(20);
         AreaPago.setRows(5);
-        AreaPago.setText("Subtotal \nIVA\t\t\t\t\t\t          16%\n--------------------------------------------------------------------------------------------------------------------------\nTotal a pagar:");
+        AreaPago.setText("Subtotal \n\n--------------------------------------------------------------------------------------------------------------------------\nTotal a pagar:");
         jScrollPane2.setViewportView(AreaPago);
 
         TablaProducto.setForeground(new java.awt.Color(204, 204, 204));
@@ -375,20 +423,170 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        PanelDetalles.add(PanelDetalleVentas, "card2");
+        PanelDetalles.add(PanelDetalleVentas, "PanelDetalleVentas");
+
+        jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel2.setText("$1000");
+
+        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel3.setText("$500");
+
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel4.setText("$200");
+
+        jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel5.setText("$100");
+
+        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel6.setText("$20");
+
+        jLabel7.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel7.setText("$50");
+
+        jLabel8.setFont(new java.awt.Font("Roboto Black", 0, 18)); // NOI18N
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel8.setText("Generar Nuevo Retiro");
+
+        TMil.setText("0");
+        TMil.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TMilActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel9.setText("------------------------------------------------------------");
+
+        TQuinientos.setText("0");
+        TQuinientos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TQuinientosActionPerformed(evt);
+            }
+        });
+
+        TDoscientos.setText("0");
+        TDoscientos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TDoscientosActionPerformed(evt);
+            }
+        });
+
+        TCien.setText("0");
+        TCien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TCienActionPerformed(evt);
+            }
+        });
+
+        TCincuenta.setText("0");
+        TCincuenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TCincuentaActionPerformed(evt);
+            }
+        });
+
+        TVeinte.setText("0");
+        TVeinte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TVeinteActionPerformed(evt);
+            }
+        });
+
+        jLabel10.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel10.setText("Total:");
+
+        LTotalRetiro.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        LTotalRetiro.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        LTotalRetiro.setText("$");
+
+        GenerarPedido.setText("Generar");
+        GenerarPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GenerarPedidoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout PanelDetalleRetirosLayout = new javax.swing.GroupLayout(PanelDetalleRetiros);
         PanelDetalleRetiros.setLayout(PanelDetalleRetirosLayout);
         PanelDetalleRetirosLayout.setHorizontalGroup(
             PanelDetalleRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 602, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelDetalleRetirosLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(PanelDetalleRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel6))
+                .addGap(18, 18, 18)
+                .addGroup(PanelDetalleRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(TMil, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TVeinte, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TQuinientos, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TDoscientos, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TCien, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TCincuenta, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(221, 221, 221))
+            .addGroup(PanelDetalleRetirosLayout.createSequentialGroup()
+                .addGroup(PanelDetalleRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PanelDetalleRetirosLayout.createSequentialGroup()
+                        .addGap(194, 194, 194)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(PanelDetalleRetirosLayout.createSequentialGroup()
+                        .addGap(218, 218, 218)
+                        .addComponent(jLabel10)
+                        .addGap(31, 31, 31)
+                        .addComponent(LTotalRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(GenerarPedido))
+                    .addGroup(PanelDetalleRetirosLayout.createSequentialGroup()
+                        .addGap(160, 160, 160)
+                        .addComponent(jLabel9)))
+                .addContainerGap(140, Short.MAX_VALUE))
         );
         PanelDetalleRetirosLayout.setVerticalGroup(
             PanelDetalleRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 378, Short.MAX_VALUE)
+            .addGroup(PanelDetalleRetirosLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(PanelDetalleRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PanelDetalleRetirosLayout.createSequentialGroup()
+                        .addComponent(TMil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(PanelDetalleRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(TQuinientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addGap(18, 18, 18)
+                        .addGroup(PanelDetalleRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(TDoscientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
+                        .addGap(18, 18, 18)
+                        .addGroup(PanelDetalleRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(TCien, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5))
+                        .addGap(18, 18, 18)
+                        .addGroup(PanelDetalleRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(TCincuenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7))
+                        .addGap(18, 18, 18)
+                        .addGroup(PanelDetalleRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(TVeinte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6)))
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(PanelDetalleRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PanelDetalleRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel10)
+                        .addComponent(LTotalRetiro))
+                    .addComponent(GenerarPedido))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
-        PanelDetalles.add(PanelDetalleRetiros, "card3");
+        PanelDetalles.add(PanelDetalleRetiros, "PanelDetalleRetiros");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -445,27 +643,80 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
     public void inabilitar(){
         TextProducto.setEditable(false);
         AreaPago.setEditable(false);
-        
     }
+    
     public void Habilitar(){
         TextProducto.setEditable(true);
     }
-    
+    public void asignarPago(BigDecimal cantidad, String tipoPago){
+        switch(tipoPago){
+                    case "Efectivo": efectivo = efectivo.add(cantidad); break;
+                    case "Cupon": ; cupon = cupon.add(cantidad); break;
+                    case "Credito":  credito = credito.add(cantidad); break;
+                    case "Debito": debito = debito.add(cantidad); break;
+                    case "Vale": vale = vale.add(cantidad); break;
+        }        
+    }
     public void modificarTextArea(){
-        BigDecimal iva = subTotal.multiply(IVA_PORCENTAJE); // 16% del subtotal
-        Total = subTotal.add(iva); // Total final con IVA incluido
-        Total = Total.setScale(2, RoundingMode.HALF_UP);
-        
+        Total = subTotal;
         AreaPago.setText("Subtotal\t\t\t\t\t\t    $"+subTotal+"\n"
-                + "IVA\t\t\t\t\t\t          16%\n"
+                + "\n"
                 + "--------------------------------------------------------------------------------------------------------------------------\n"
                 + "Total a pagar:\t\t\t\t\t\t   $"+Total);
     }
-    
-    public void GenerarTicket(){
-        
+    public void GenerarTicket(List<String> pagos){
+        new PanelTicket(null, true, pagos,pagosParciales, nombreCajero, datosVentas, Total, monto, cantidadPagada).setVisible(true);
+        cantidadPagada= new BigDecimal(0);
     }
     
+    public void Cobro(String tipoPago){
+        montoPagado panelAuxiliar = new montoPagado(null, true, subTotal);
+        panelAuxiliar.setVisible(true);
+        monto = panelAuxiliar.getMonto();
+        BigDecimal pagoAuxiliar = monto;
+        cantidadPagada = cantidadPagada.add(monto);
+        
+        if(cantidadPagada.compareTo(Total)<0){
+            asignarPago(monto, tipoPago);
+            subTotal = subTotal.subtract(monto);
+            AreaPago.setText("Subtotal\t\t\t\t\t\t    $"+subTotal+"\n"
+                + "\n"
+                + "--------------------------------------------------------------------------------------------------------------------------\n"
+                + "Total a pagar:\t\t\t\t\t\t   $"+Total);
+            tiposPagos.add(tipoPago);
+            pagosParciales.add(pagoAuxiliar);
+            return;
+        } else {
+            monto = BigDecimal.ZERO;
+            monto = cantidadPagada.subtract(Total);
+        }
+        
+        tiposPagos.add(tipoPago);
+        pagosParciales.add(pagoAuxiliar);
+        totalVentas = totalVentas.add(Total);
+        
+        asignarPago(subTotal, tipoPago);
+        
+        TipoPago = tipoPago;
+        GenerarTicket(tiposPagos);
+        
+        tiposPagos.clear();
+        AreaPago.setText("Subtotal\n"
+                + "\n"
+                + "--------------------------------------------------------------------------------------------------------------------------\n"
+                + "Total a pagar:");
+        datosVentas.clear();
+        modTabVenta = new MTablaVenta(datosVentas);
+        TablaProducto.setModel(modTabVenta);
+        TextProducto.setText("");
+        CardLayout cl = (CardLayout)(PanelBotones.getLayout());
+        cl.show(PanelBotones, "InicioPanel"); // o "inicio"
+        Habilitar();
+        
+        Total = BigDecimal.ZERO;
+        subTotal = BigDecimal.ZERO;
+        TextProducto.setEditable(false);
+    }
     private void BotonIniciarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonIniciarVentaActionPerformed
         // TODO add your handling code here:
         CardLayout cl = (CardLayout)(PanelBotones.getLayout());
@@ -487,27 +738,59 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
 
     private void ReporteParcialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReporteParcialActionPerformed
         // TODO add your handling code here:
-        setVisible(false);
-        new PanelReporteVenta(null, true, "María López").setVisible(true);
-        setVisible(true);
+        List<String> ListaAuxiliar = new ArrayList<>();
+        ListaAuxiliar.add(nombreCajero);
+        ListaAuxiliar.add(efectivo+"");
+        ListaAuxiliar.add(debito+"");
+        ListaAuxiliar.add(credito+"");
+        ListaAuxiliar.add(cupon+"");
+        ListaAuxiliar.add(vale+"");
+        ListaAuxiliar.add(Retiros+"");
+        ListaAuxiliar.add(totalVentas+"");
+        ListaAuxiliar.add("X");
+        
+        new PanelReporteVenta(null, true, ListaAuxiliar).setVisible(true);
         
     }//GEN-LAST:event_ReporteParcialActionPerformed
 
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+    private void ReporteFinalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReporteFinalActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton12ActionPerformed
+        List<String> ListaAuxiliar = new ArrayList<>();
+        ListaAuxiliar.add(nombreCajero);
+        ListaAuxiliar.add(efectivo+"");
+        ListaAuxiliar.add(debito+"");
+        ListaAuxiliar.add(credito+"");
+        ListaAuxiliar.add(cupon+"");
+        ListaAuxiliar.add(vale+"");
+        ListaAuxiliar.add(Retiros+"");
+        ListaAuxiliar.add(totalVentas+"");
+        ListaAuxiliar.add(" Z");
+        
+        new PanelReporteVenta(null, true, ListaAuxiliar).setVisible(true);
+        
+        efectivo = BigDecimal.ZERO;
+        debito = BigDecimal.ZERO;
+        credito = BigDecimal.ZERO;
+        cupon = BigDecimal.ZERO;
+        vale = BigDecimal.ZERO;
+        Retiros = 0;
+        totalVentas = BigDecimal.ZERO;
+    }//GEN-LAST:event_ReporteFinalActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton13ActionPerformed
 
-    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+    private void AgregarRetiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AgregarRetiroActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton15ActionPerformed
+        CardLayout cl = (CardLayout)(PanelDetalles.getLayout());
+        cl.show(PanelDetalles, "PanelDetalleRetiros"); // o "inicio"
+        System.out.println(PanelDetalles.getSize());
+    }//GEN-LAST:event_AgregarRetiroActionPerformed
 
-    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+    private void ConsultarRetiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarRetiroActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton16ActionPerformed
+    }//GEN-LAST:event_ConsultarRetiroActionPerformed
 
     private void TextProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TextProductoActionPerformed
         // TODO add your handling code here:
@@ -516,13 +799,13 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
             try {
                 int productoIngresado = Integer.parseInt(entrada);
                 boolean encontrado = false;
-
                 for (Producto p : productos) {
                     if (p.getIdProducto() == productoIngresado) {
                         DatosTablaVenta dtv = new DatosTablaVenta(p);
                         datosVentas.add(dtv);
                         subTotal = subTotal.add(dtv.getSubtotal());
                         encontrado = true;
+                        productosComprados.add(p);
                         break; // Producto encontrado, salimos del ciclo
                     }
                 }
@@ -554,7 +837,7 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
             CardLayout cl = (CardLayout)(PanelBotones.getLayout());
             cl.show(PanelBotones, "InicioPanel"); // o "inicio"
         }
-        
+        TextProducto.setEditable(false);        
     }//GEN-LAST:event_SalirVentaActionPerformed
 
     private void SalirSupervisorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SalirSupervisorActionPerformed
@@ -572,24 +855,79 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
         if (respuesta == JOptionPane.YES_OPTION){
             CardLayout cl = (CardLayout)(PanelBotones.getLayout());
             cl.show(PanelBotones, "InicioPanel"); // o "inicio"
+            cl = (CardLayout)(PanelDetalles.getLayout());
+            cl.show(PanelDetalles, "PanelDetalleVentas");
         }
     }//GEN-LAST:event_RegresarRetiroActionPerformed
 
     private void EfectivoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EfectivoVentaActionPerformed
         // TODO add your handling code here:
-        GenerarTicket();
-        AreaPago.setText("Subtotal\n"
-                + "IVA\t\t\t\t\t\t         16%\n"
-                + "--------------------------------------------------------------------------------------------------------------------------\n"
-                + "Total a pagar:");
-        datosVentas.clear();
-        modTabVenta = new MTablaVenta(datosVentas);
-        TablaProducto.setModel(modTabVenta);
-        TextProducto.setText("");
-        CardLayout cl = (CardLayout)(PanelBotones.getLayout());
-        cl.show(PanelBotones, "InicioPanel"); // o "inicio"
-        Habilitar();
+        Cobro("Efectivo");
     }//GEN-LAST:event_EfectivoVentaActionPerformed
+
+    private void CuponVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CuponVentaActionPerformed
+        // TODO add your handling code here:
+        Cobro("Cupon");
+    }//GEN-LAST:event_CuponVentaActionPerformed
+
+    private void DebitoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DebitoVentaActionPerformed
+        // TODO add your handling code here:
+        Cobro("Debito");
+    }//GEN-LAST:event_DebitoVentaActionPerformed
+
+    private void CreditoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreditoVentaActionPerformed
+        // TODO add your handling code here:
+        Cobro("Credito");
+    }//GEN-LAST:event_CreditoVentaActionPerformed
+
+    private void ValeVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValeVentaActionPerformed
+        // TODO add your handling code here:
+        Cobro("Vale");
+    }//GEN-LAST:event_ValeVentaActionPerformed
+
+    private void TMilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TMilActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TMilActionPerformed
+
+    private void TQuinientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TQuinientosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TQuinientosActionPerformed
+
+    private void TDoscientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TDoscientosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TDoscientosActionPerformed
+
+    private void TCienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TCienActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TCienActionPerformed
+
+    private void TCincuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TCincuentaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TCincuentaActionPerformed
+
+    private void TVeinteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TVeinteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TVeinteActionPerformed
+
+    private void GenerarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GenerarPedidoActionPerformed
+        // TODO add your handling code here:
+        List<String> datosRetiro = new ArrayList<>();
+        datosRetiro.add(TMil.getText()); //Cantidad de billetes de 1000
+        datosRetiro.add(TQuinientos.getText()); //Cantidad de billetes de 500
+        datosRetiro.add(TDoscientos.getText()); //Cantidad de billetes de 200
+        datosRetiro.add(TCien.getText()); //Cantidad de billetes de 100
+        datosRetiro.add(TCincuenta.getText()); //Cantidad de billetes de 50
+        datosRetiro.add(TVeinte.getText()); //Cantidad de billetes de 20
+        
+        Retiros += Integer.parseInt(datosRetiro.get(0)) * 1000;     // Billetes de 1000
+        Retiros += Integer.parseInt(datosRetiro.get(1)) * 500;      // Billetes de 500
+        Retiros += Integer.parseInt(datosRetiro.get(2)) * 200;      // Billetes de 200
+        Retiros += Integer.parseInt(datosRetiro.get(3)) * 100;      // Billetes de 100
+        Retiros += Integer.parseInt(datosRetiro.get(4)) * 50;       // Billetes de 50
+        Retiros += Integer.parseInt(datosRetiro.get(5)) * 20;       // Billetes de 20
+        datosRetiro.add(Retiros+"");
+        new PanelRetiro(null, true, datosRetiro).setVisible(true);
+    }//GEN-LAST:event_GenerarPedidoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -627,7 +965,7 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                InterfazCajero dialog = new InterfazCajero(new javax.swing.JFrame(), true);
+                InterfazCajero dialog = new InterfazCajero(new javax.swing.JFrame(), true, "");
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -640,16 +978,20 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AgregarRetiro;
     private javax.swing.JTextArea AreaPago;
     private javax.swing.JButton BotonIniciarVenta;
     private javax.swing.JButton BotonRetiro;
     private javax.swing.JButton BotonSalirInicio;
     private javax.swing.JButton BotonSupervisor;
+    private javax.swing.JButton ConsultarRetiro;
     private javax.swing.JButton CreditoVenta;
     private javax.swing.JButton CuponVenta;
     private javax.swing.JButton DebitoVenta;
     private javax.swing.JButton EfectivoVenta;
+    private javax.swing.JButton GenerarPedido;
     private javax.swing.JPanel InicioPanel;
+    private javax.swing.JLabel LTotalRetiro;
     private javax.swing.JPanel PanelBotones;
     private javax.swing.JPanel PanelDetalleRetiros;
     private javax.swing.JPanel PanelDetalleVentas;
@@ -658,17 +1000,30 @@ private final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.16");
     private javax.swing.JPanel PanelSupervisor;
     private javax.swing.JPanel PanelVenta;
     private javax.swing.JButton RegresarRetiro;
+    private javax.swing.JButton ReporteFinal;
     private javax.swing.JButton ReporteParcial;
     private javax.swing.JButton SalirSupervisor;
     private javax.swing.JButton SalirVenta;
+    private javax.swing.JTextField TCien;
+    private javax.swing.JTextField TCincuenta;
+    private javax.swing.JTextField TDoscientos;
+    private javax.swing.JTextField TMil;
+    private javax.swing.JTextField TQuinientos;
+    private javax.swing.JTextField TVeinte;
     private javax.swing.JTable TablaProducto;
     private javax.swing.JTextField TextProducto;
     private javax.swing.JButton ValeVenta;
-    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton15;
-    private javax.swing.JButton jButton16;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables

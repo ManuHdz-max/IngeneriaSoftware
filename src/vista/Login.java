@@ -45,28 +45,20 @@ private String usuarioElegido;
         Logo.setIcon(iconMiniatura);
         cTrabajador = new TrabajadorJpaController(AdmDatos.getEntityManagerFactory());
         trabajadores = cTrabajador.findTrabajadorEntities();
-        cargarTrabajadores();
-    }
-    public void cargarTrabajadores(){
-        
     }
     public void AbrirInterfazAlmacenista(){
        // Cerrar ventana login
         setVisible(false);
-
         InterfazInventario inventario = new InterfazInventario(null, true); // o false si no quieres que sea modal
         inventario.setLocationRelativeTo(null);
         inventario.setVisible(true);
-
         // Cuando cierras inventario puedes volver a mostrar login si quieres
         setVisible(true);
     }
     public void AbrirInterfazCajero(){
        // Cerrar ventana login
         setVisible(false);
-
-        new InterfazCajero(null, true).setVisible(true); // o false si no quieres que sea modal
-
+        new InterfazCajero(null, true, usuarioElegido).setVisible(true); // o false si no quieres que sea modal
         // Cuando cierras inventario puedes volver a mostrar login si quieres
         setVisible(true);
 
