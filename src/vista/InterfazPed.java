@@ -89,6 +89,10 @@ public class InterfazPed extends javax.swing.JDialog {
     private BigDecimal costoProductos = BigDecimal.ZERO;
     private BigDecimal totalMonto = BigDecimal.ZERO;
 
+    //fechas agregar y editar ubicaicion
+    private Date fechaE = new Date();
+    private Date fechaA = new Date();
+
     public InterfazPed(java.awt.Frame parent, boolean modal) throws Exception {
         super(parent, modal);
         initComponents();
@@ -113,7 +117,11 @@ public class InterfazPed extends javax.swing.JDialog {
         cantidadSP.setModel(Msp);
         cargarPedidos();
         calendarioSelec.setEnabled(false);
+        calenE.setEnabled(false);
+        calenA.setEnabled(false);
         Bconfi.setEnabled(false);
+        Bcf1.setEnabled(false);
+        Bcf2.setEnabled(false);
         impL.setText("");
         Bcancelar.setEnabled(false);
         cargarCB();
@@ -345,17 +353,19 @@ public class InterfazPed extends javax.swing.JDialog {
         BactualizarU = new javax.swing.JButton();
         ubiCB = new javax.swing.JComboBox<>();
         textFechaAcU = new javax.swing.JLabel();
-        jLabel22 = new javax.swing.JLabel();
-        jCalendar2 = new com.toedter.calendar.JCalendar();
+        fE = new javax.swing.JLabel();
+        calenE = new com.toedter.calendar.JCalendar();
+        Bcf1 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
         pedidosUbiCB = new javax.swing.JComboBox<>();
         jLabel19 = new javax.swing.JLabel();
         ubiCB2 = new javax.swing.JComboBox<>();
-        jLabel20 = new javax.swing.JLabel();
+        fA = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
         jButton6 = new javax.swing.JButton();
-        jCalendar3 = new com.toedter.calendar.JCalendar();
+        calenA = new com.toedter.calendar.JCalendar();
+        Bcf2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -466,7 +476,7 @@ public class InterfazPed extends javax.swing.JDialog {
                         .addComponent(Bcancelar)
                         .addGap(24, 24, 24))))
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(93, 93, 93)
                         .addComponent(txtResult, javax.swing.GroupLayout.PREFERRED_SIZE, 527, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -476,16 +486,23 @@ public class InterfazPed extends javax.swing.JDialog {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 555, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(43, 43, 43)
+                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(539, 539, 539))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(598, 598, 598)
+                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(impL, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(21, 21, 21)))))))
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(impL, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 555, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(46, 46, 46)))))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -503,18 +520,18 @@ public class InterfazPed extends javax.swing.JDialog {
                 .addComponent(txtResult)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
                 .addComponent(jLabel11)
-                .addGap(18, 18, 18)
+                .addGap(24, 24, 24)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(impL))
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGap(68, 68, 68)
+                .addComponent(impL)
+                .addGap(29, 29, 29))
         );
 
         jTabbedPane1.addTab("Busqueda", jPanel3);
@@ -617,9 +634,9 @@ public class InterfazPed extends javax.swing.JDialog {
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(62, 62, 62)
+                                .addGap(65, 65, 65)
                                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(94, 94, 94)
+                                .addGap(70, 70, 70)
                                 .addComponent(textTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -645,7 +662,7 @@ public class InterfazPed extends javax.swing.JDialog {
                                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(29, 29, 29)
                                         .addComponent(colorCB, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 189, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -659,7 +676,8 @@ public class InterfazPed extends javax.swing.JDialog {
                                 .addGap(49, 49, 49)
                                 .addComponent(Bconfi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(calendarioSelec, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(6, 6, 6)
+                                .addComponent(calendarioSelec, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(0, 64, Short.MAX_VALUE))))
         );
@@ -668,7 +686,7 @@ public class InterfazPed extends javax.swing.JDialog {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -693,26 +711,25 @@ public class InterfazPed extends javax.swing.JDialog {
                         .addGap(36, 36, 36)
                         .addComponent(jLabel15))
                     .addComponent(textPrecio, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(4, 4, 4)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(textFecha)
                             .addComponent(Bconfi, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(calendarioSelec, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(calendarioSelec, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(45, 45, 45)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel10)
                             .addComponent(jButton5))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(textTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16))
+                .addGap(42, 42, 42))
         );
 
         jTabbedPane1.addTab("Registro", jPanel4);
@@ -773,62 +790,80 @@ public class InterfazPed extends javax.swing.JDialog {
         });
 
         ubiCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ubiCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ubiCBActionPerformed(evt);
+            }
+        });
 
-        jLabel22.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
-        jLabel22.setText("Fecha de entrega: ");
+        fE.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        fE.setText("Fecha de entrega: ");
+
+        Bcf1.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        Bcf1.setText("Confirmar fecha");
+        Bcf1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Bcf1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(fE, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(105, 105, 105)
-                                    .addComponent(ubiCB, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(textFechaAcU, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(BactualizarU, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(80, 80, 80)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(187, 187, 187)
+                                .addComponent(textFechaAcU, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(BactualizarU, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(ubiCB, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(24, 24, 24)))
+                        .addGap(37, 37, 37)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCalendar2, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE))))
-                .addContainerGap())
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(Bcf1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(calenE, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(35, 35, 35))))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(jLabel14)
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(fE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel16)
                             .addComponent(ubiCB, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(30, 30, 30)
+                        .addComponent(jLabel17)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel17)
-                            .addComponent(textFechaAcU, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(35, 35, 35)
+                        .addComponent(textFechaAcU, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(3, 3, 3)
                         .addComponent(BactualizarU, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(17, 17, 17))
+                        .addGap(46, 46, 46))
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jLabel22)
-                        .addGap(18, 18, 18)
-                        .addComponent(jCalendar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(9, Short.MAX_VALUE))))
+                        .addComponent(calenE, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Bcf1, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+                        .addGap(12, 12, 12))))
         );
 
         jTabbedPane2.addTab("Editar", jPanel5);
@@ -837,14 +872,24 @@ public class InterfazPed extends javax.swing.JDialog {
         jLabel18.setText("Pedido:");
 
         pedidosUbiCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        pedidosUbiCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pedidosUbiCBActionPerformed(evt);
+            }
+        });
 
         jLabel19.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel19.setText("Ubicaion:");
 
         ubiCB2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ubiCB2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ubiCB2ActionPerformed(evt);
+            }
+        });
 
-        jLabel20.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
-        jLabel20.setText("Fecha de entrega:");
+        fA.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        fA.setText("Fecha de entrega:");
 
         jButton6.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jButton6.setText("Agregar");
@@ -854,32 +899,39 @@ public class InterfazPed extends javax.swing.JDialog {
             }
         });
 
+        Bcf2.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        Bcf2.setText("Confirmar fecha");
+        Bcf2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Bcf2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
-                            .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(59, 59, 59)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(ubiCB2, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(pedidosUbiCB, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel21, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                        .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(ubiCB2, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(pedidosUbiCB, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel21, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(77, 77, 77)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jCalendar3, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 136, Short.MAX_VALUE))
-                    .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(calenA, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Bcf2, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 33, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -893,7 +945,7 @@ public class InterfazPed extends javax.swing.JDialog {
                             .addComponent(pedidosUbiCB, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(20, 20, 20)
-                        .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(fA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(34, 34, 34)
@@ -901,14 +953,16 @@ public class InterfazPed extends javax.swing.JDialog {
                             .addComponent(ubiCB2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel19))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(3, 3, 3)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel21, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(41, 41, 41))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCalendar3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(28, Short.MAX_VALUE))))
+                        .addComponent(calenA, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Bcf2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         jTabbedPane2.addTab("Agregar", jPanel6);
@@ -928,9 +982,11 @@ public class InterfazPed extends javax.swing.JDialog {
                         .addComponent(textIdU, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(55, 55, 55)
                         .addComponent(BconsultarU, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(textInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 795, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(17, Short.MAX_VALUE))
+                    .addComponent(textInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(82, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 795, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -950,9 +1006,9 @@ public class InterfazPed extends javax.swing.JDialog {
                 .addComponent(textInfo)
                 .addGap(36, 36, 36)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(18, 18, 18)
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(91, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Localizacion", jPanel2);
@@ -1223,51 +1279,76 @@ public class InterfazPed extends javax.swing.JDialog {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
+        //agregar nuevo pedido a ubicacion
+        int s = pedidosUbiCB.getSelectedIndex();
+        int su = ubiCB2.getSelectedIndex();
+        fechaA = calenA.getDate();
+        if (s != 0 && su != 0 && fechaA != null) {
+            String uSelec=leeUbiSelec(s);
+            //leer pedido
+            
+            
+            UbicacionPedido ub = new UbicacionPedido();
+
+        }
+
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void BactualizarUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BactualizarUActionPerformed
         // TODO add your handling code here:
         int ubiS = tUbi.getSelectedRow();
-        if (ubiS >= 0) {
-            int idPed = Integer.parseInt(mtU.getValueAt(ubiS, 0).toString());
-            Pedido ped = buscaPedidoTabla(idPed);
-            //guardar selccion del combo
-            int cbS=ubiCB.getSelectedIndex();
-            if(cbS>0){
-                int resp = JOptionPane.showConfirmDialog(
-                    null,
-                    "¿Modificar la ubicacion del pedido?" + ped.getIdPedido()+ " a "+ubiCB.getItemAt(cbS),
-                    "Aviso",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE
-            );
-                
-            }
-            
-            if (resp == JOptionPane.YES_OPTION) {
+        if (ubiS > 0) {
+            if (ubiCB.getSelectedIndex() != 0 && fechaE != null) {
+                int idPed = Integer.parseInt(mtU.getValueAt(ubiS, 0).toString());
+                Pedido ped = buscaPedidoTabla(idPed);
+                //guardar selccion del combo
+                int cbS = ubiCB.getSelectedIndex();
+                if (cbS > 0) {
+                    int resp = JOptionPane.showConfirmDialog(
+                            null,
+                            "¿Modificar la ubicacion del pedido?" + ped.getIdPedido() + " a " + ubiCB.getItemAt(cbS),
+                            "Aviso",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE
+                    );
+                    if (resp == JOptionPane.YES_OPTION) {
+                        UbicacionPedido encontradoU = buscarUbiPedidos(ped);
+                        try {
+                            String valorU =leeUbiSelec(ubiS);
 
-                try {
-                    ped.setEstado("cancelado");
-                    cPedido.edit(ped);
-                    System.out.println("cancelado pedido " + ped.getIdCliente());
-                } catch (NonexistentEntityException ex) {
-                    Logger.getLogger(InterfazPed.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (Exception ex) {
-                    Logger.getLogger(InterfazPed.class.getName()).log(Level.SEVERE, null, ex);
+                            encontradoU.setEstadoLogistica(valorU);
+                            cUbicacionP.edit(encontradoU);
+                            System.out.println(encontradoU.getIdPedido().getIdPedido() + " modiicado a " + valorU);
+
+                            ubiCB.setSelectedIndex(0);
+                            textFechaAcU.setText("");
+                            fE.setText("Fecha de entrega");
+                            fechaE = null;
+                        } catch (Exception e) {
+                            System.out.println("ERROR al cambiar ubicacion");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Se cancelo el cambio",
+                                "Advertencia",
+                                JOptionPane.WARNING_MESSAGE
+                        );
+
+                    }
                 }
             } else {
                 JOptionPane.showMessageDialog(
                         null,
-                        "Se evito la cancelacion",
+                        "Ingresa campos validos",
                         "Advertencia",
                         JOptionPane.WARNING_MESSAGE
                 );
-
             }
         } else {
             JOptionPane.showMessageDialog(
                     null,
-                    "Selecciona una fila",
+                    "Selecciona una fila valida en la tabla",
                     "Advertencia",
                     JOptionPane.WARNING_MESSAGE
             );
@@ -1281,6 +1362,38 @@ public class InterfazPed extends javax.swing.JDialog {
         BactualizarU.setEnabled(true);
 
     }//GEN-LAST:event_tUbiMouseClicked
+
+    private void ubiCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubiCBActionPerformed
+        // TODO add your handling code here:
+        textFechaAcU.setText(formato.format(new Date()));
+        calenE.setEnabled(true);
+        calenE.setMinSelectableDate(new Date());
+        Bcf1.setEnabled(true);
+    }//GEN-LAST:event_ubiCBActionPerformed
+
+    private void Bcf2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bcf2ActionPerformed
+        // TODO add your handling code here:
+        fechaA = calenA.getDate();
+        fA.setText("Fecha de entrega " + formato.format(fechaA));
+    }//GEN-LAST:event_Bcf2ActionPerformed
+
+    private void pedidosUbiCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pedidosUbiCBActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_pedidosUbiCBActionPerformed
+
+    private void ubiCB2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubiCB2ActionPerformed
+        // TODO add your handling code here:
+        calenA.setEnabled(true);
+        calenA.setMinSelectableDate(new Date());
+        Bcf2.setEnabled(true);
+    }//GEN-LAST:event_ubiCB2ActionPerformed
+
+    private void Bcf1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bcf1ActionPerformed
+        // TODO add your handling code here:
+        fechaE = calenE.getDate();
+        fE.setText("Fecha de entrega " + formato.format(fechaE));
+
+    }//GEN-LAST:event_Bcf1ActionPerformed
     private void cargarUbicacion() {
 
         String idUbi = textIdU.getText();
@@ -1335,6 +1448,28 @@ public class InterfazPed extends javax.swing.JDialog {
         }
     }
 
+    private String leeUbiSelec(int ubiS) {
+        String valorU = "";
+        switch (ubiS) {
+            case 1:
+                valorU = "en_transito";
+                break;
+
+            case 2:
+                valorU = "almacen";
+                break;
+            case 3:
+                valorU = "entregado";
+                break;
+            case 4:
+                valorU = "recogido";
+                break;
+            default:
+                valorU = "";
+        }
+        return valorU;
+    }
+
     private void cargarRegistrosUbi() {
         for (UbicacionPedido u : ubicaciones) {
             Object[] fila = {u.getIdPedido().getIdPedido(),
@@ -1345,6 +1480,17 @@ public class InterfazPed extends javax.swing.JDialog {
             };
             mtU.addRow(fila);
         }
+    }
+
+    private UbicacionPedido buscarUbiPedidos(Pedido p) {
+        ubicaciones = cUbicacionP.findUbicacionPedidoEntities();
+        for (UbicacionPedido u : ubicaciones) {
+            if (u.getIdPedido().getIdPedido() == p.getIdPedido()) {
+                return u;
+            }
+        }
+        return null;
+
     }
 
     private static boolean esEntero(String s) {
@@ -1507,15 +1653,21 @@ public class InterfazPed extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BactualizarU;
     private javax.swing.JButton Bcancelar;
+    private javax.swing.JButton Bcf1;
+    private javax.swing.JButton Bcf2;
     private javax.swing.JButton Bconfi;
     private javax.swing.JButton BconsultarU;
     private javax.swing.JTextField TextIdP;
     private javax.swing.JButton bBuscar;
+    private com.toedter.calendar.JCalendar calenA;
+    private com.toedter.calendar.JCalendar calenE;
     private com.toedter.calendar.JCalendar calendarioSelec;
     private javax.swing.JSpinner cantidadSP;
     private javax.swing.JComboBox<String> clienteCB;
     private javax.swing.JComboBox<String> colorCB;
     private javax.swing.JTextArea detallesText;
+    private javax.swing.JLabel fA;
+    private javax.swing.JLabel fE;
     private javax.swing.JLabel impL;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -1524,8 +1676,6 @@ public class InterfazPed extends javax.swing.JDialog {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private com.toedter.calendar.JCalendar jCalendar1;
-    private com.toedter.calendar.JCalendar jCalendar2;
-    private com.toedter.calendar.JCalendar jCalendar3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1538,9 +1688,7 @@ public class InterfazPed extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
