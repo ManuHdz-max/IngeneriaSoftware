@@ -32,4 +32,7 @@ public class DatosTablaInventario {
     public String getObservaciones(){
         return inventario.getObservaciones();
     }
+    public Inventario getObjInventatio(){
+        return inventario;
+    }
 }
