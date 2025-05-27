@@ -4,6 +4,12 @@
  */
 package vista;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,14 +25,14 @@ public class PanelRetiro extends javax.swing.JDialog {
     public PanelRetiro(java.awt.Frame parent, boolean modal, List<String> datos) {
         super(parent, modal);
         initComponents();
-        String uno = datos.get(0); 
-        String dos = datos.get(0); 
-        String tres = datos.get(0); 
-        String cuatro = datos.get(0); 
-        String cinco = datos.get(0); 
-        String seis = datos.get(0); 
-        String siete = datos.get(0); 
-        String total = datos.get(0); 
+        String uno = datos.get(0); //1000
+        String dos = datos.get(1); //500
+        String tres = datos.get(2); //200
+        String cuatro = datos.get(3); //100
+        String cinco = datos.get(4); //50
+        String seis = datos.get(5); //20
+        String total = datos.get(6); //total
+        String cajero = datos.get(7); // nombre cajero
         
         AreaDatos.setText("\tRETIRO\n-----------------------------------------------\n"
                 + "                   Zapateria MiChingon\n"
@@ -41,9 +47,27 @@ public class PanelRetiro extends javax.swing.JDialog {
                 + "$20\t0\t0\n"
                 + "-----------------------------------------------\n"
                 + "Total: \t$0");
-        
+        guardarRetiro(LocalDate.now()+"",total, cajero);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                dispose(); // Ahora sí se cierra bien
+            }
+        });
     }
 
+    public void guardarRetiro(String fecha, String monto, String cajero) {
+        String ruta = "retiros.txt";  // archivo donde guardas
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(ruta, true))) { 
+            // 'true' para agregar sin borrar contenido
+            String linea = fecha + "\t" + monto + "\t" + cajero;
+            bw.write(linea);
+            bw.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

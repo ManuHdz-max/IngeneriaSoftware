@@ -4,18 +4,37 @@
  */
 package vista;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
 import control.AdmDatos;
 import control.ProductoJpaController;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import javax.imageio.ImageIO;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 import modelo.DatosTablaVenta;
 import modelo.MTablaVenta;
 import modelo.Producto;
@@ -43,7 +62,8 @@ public class InterfazCajero extends javax.swing.JDialog {
     private BigDecimal vale = new BigDecimal(0);
     private BigDecimal totalVentas = new BigDecimal(0);
     private int Retiros = 0;
-    
+    private Document doc = new Document();
+    private String nombreArchivo = "ticket.pdf";  // Se sobrescribirá si ya existe
     /**
      * Creates new form InterfazCajero
      */
@@ -88,7 +108,7 @@ public class InterfazCajero extends javax.swing.JDialog {
         PanelSupervisor = new javax.swing.JPanel();
         ReporteParcial = new javax.swing.JButton();
         ReporteFinal = new javax.swing.JButton();
-        jButton13 = new javax.swing.JButton();
+        UltimaTransaccion = new javax.swing.JButton();
         SalirSupervisor = new javax.swing.JButton();
         PanelRetiro = new javax.swing.JPanel();
         AgregarRetiro = new javax.swing.JButton();
@@ -117,7 +137,13 @@ public class InterfazCajero extends javax.swing.JDialog {
         TVeinte = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         LTotalRetiro = new javax.swing.JLabel();
-        GenerarPedido = new javax.swing.JButton();
+        GenerarRetiro = new javax.swing.JButton();
+        PanelConsultarRetiros = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel12 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -287,11 +313,11 @@ public class InterfazCajero extends javax.swing.JDialog {
             }
         });
 
-        jButton13.setFont(new java.awt.Font("Roboto Black", 0, 14)); // NOI18N
-        jButton13.setText("Ultima Transaccion");
-        jButton13.addActionListener(new java.awt.event.ActionListener() {
+        UltimaTransaccion.setFont(new java.awt.Font("Roboto Black", 0, 14)); // NOI18N
+        UltimaTransaccion.setText("Ultima Transaccion");
+        UltimaTransaccion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton13ActionPerformed(evt);
+                UltimaTransaccionActionPerformed(evt);
             }
         });
 
@@ -312,7 +338,7 @@ public class InterfazCajero extends javax.swing.JDialog {
                 .addGroup(PanelSupervisorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ReporteParcial, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ReporteFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(UltimaTransaccion, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SalirSupervisor, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -324,7 +350,7 @@ public class InterfazCajero extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(ReporteFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(UltimaTransaccion, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(SalirSupervisor, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -499,10 +525,10 @@ public class InterfazCajero extends javax.swing.JDialog {
         LTotalRetiro.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         LTotalRetiro.setText("$");
 
-        GenerarPedido.setText("Generar");
-        GenerarPedido.addActionListener(new java.awt.event.ActionListener() {
+        GenerarRetiro.setText("Generar");
+        GenerarRetiro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                GenerarPedidoActionPerformed(evt);
+                GenerarRetiroActionPerformed(evt);
             }
         });
 
@@ -539,7 +565,7 @@ public class InterfazCajero extends javax.swing.JDialog {
                         .addGap(31, 31, 31)
                         .addComponent(LTotalRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(GenerarPedido))
+                        .addComponent(GenerarRetiro))
                     .addGroup(PanelDetalleRetirosLayout.createSequentialGroup()
                         .addGap(160, 160, 160)
                         .addComponent(jLabel9)))
@@ -582,11 +608,66 @@ public class InterfazCajero extends javax.swing.JDialog {
                     .addGroup(PanelDetalleRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel10)
                         .addComponent(LTotalRetiro))
-                    .addComponent(GenerarPedido))
+                    .addComponent(GenerarRetiro))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
 
         PanelDetalles.add(PanelDetalleRetiros, "PanelDetalleRetiros");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jTable1);
+
+        jLabel12.setText("Retiros Realizados");
+
+        jButton1.setText("Eliminar");
+
+        jButton2.setText("Modificar");
+
+        javax.swing.GroupLayout PanelConsultarRetirosLayout = new javax.swing.GroupLayout(PanelConsultarRetiros);
+        PanelConsultarRetiros.setLayout(PanelConsultarRetirosLayout);
+        PanelConsultarRetirosLayout.setHorizontalGroup(
+            PanelConsultarRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelConsultarRetirosLayout.createSequentialGroup()
+                .addContainerGap(79, Short.MAX_VALUE)
+                .addGroup(PanelConsultarRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelConsultarRetirosLayout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(71, 71, 71))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelConsultarRetirosLayout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addGap(247, 247, 247))))
+            .addGroup(PanelConsultarRetirosLayout.createSequentialGroup()
+                .addGap(208, 208, 208)
+                .addComponent(jButton1)
+                .addGap(77, 77, 77)
+                .addComponent(jButton2)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        PanelConsultarRetirosLayout.setVerticalGroup(
+            PanelConsultarRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelConsultarRetirosLayout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(jLabel12)
+                .addGap(47, 47, 47)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addGroup(PanelConsultarRetirosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
+                .addGap(34, 34, 34))
+        );
+
+        PanelDetalles.add(PanelConsultarRetiros, "PanelConsultarRetiros");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -640,14 +721,14 @@ public class InterfazCajero extends javax.swing.JDialog {
         TablaProducto.getColumnModel().getColumn(4).setPreferredWidth(120); // Subtotal
 
     }
+    
     public void inabilitar(){
         TextProducto.setEditable(false);
         AreaPago.setEditable(false);
     }
     
-    public void Habilitar(){
-        TextProducto.setEditable(true);
-    }
+    public void Habilitar(){ TextProducto.setEditable(true); }
+    
     public void asignarPago(BigDecimal cantidad, String tipoPago){
         switch(tipoPago){
                     case "Efectivo": efectivo = efectivo.add(cantidad); break;
@@ -657,6 +738,7 @@ public class InterfazCajero extends javax.swing.JDialog {
                     case "Vale": vale = vale.add(cantidad); break;
         }        
     }
+    
     public void modificarTextArea(){
         Total = subTotal;
         AreaPago.setText("Subtotal\t\t\t\t\t\t    $"+subTotal+"\n"
@@ -664,8 +746,9 @@ public class InterfazCajero extends javax.swing.JDialog {
                 + "--------------------------------------------------------------------------------------------------------------------------\n"
                 + "Total a pagar:\t\t\t\t\t\t   $"+Total);
     }
+    
     public void GenerarTicket(List<String> pagos){
-        new PanelTicket(null, true, pagos,pagosParciales, nombreCajero, datosVentas, Total, monto, cantidadPagada).setVisible(true);
+        new PanelTicket(null, true, pagos,pagosParciales, nombreCajero, datosVentas, Total, monto, cantidadPagada);
         cantidadPagada= new BigDecimal(0);
     }
     
@@ -717,6 +800,7 @@ public class InterfazCajero extends javax.swing.JDialog {
         subTotal = BigDecimal.ZERO;
         TextProducto.setEditable(false);
     }
+    
     private void BotonIniciarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonIniciarVentaActionPerformed
         // TODO add your handling code here:
         CardLayout cl = (CardLayout)(PanelBotones.getLayout());
@@ -748,7 +832,6 @@ public class InterfazCajero extends javax.swing.JDialog {
         ListaAuxiliar.add(Retiros+"");
         ListaAuxiliar.add(totalVentas+"");
         ListaAuxiliar.add("X");
-        
         new PanelReporteVenta(null, true, ListaAuxiliar).setVisible(true);
         
     }//GEN-LAST:event_ReporteParcialActionPerformed
@@ -777,9 +860,16 @@ public class InterfazCajero extends javax.swing.JDialog {
         totalVentas = BigDecimal.ZERO;
     }//GEN-LAST:event_ReporteFinalActionPerformed
 
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+    private void UltimaTransaccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UltimaTransaccionActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton13ActionPerformed
+        try {
+            File archivo = new File("C:\\Users\\Hp EliteBook\\OneDrive\\Documents\\Instituto Tecnologico de Oaxaca\\6 Semestre\\Ingeniería de Software\\MiChingon\\ticket.pdf");  // Ruta del PDF ya creado
+            if (archivo.exists()) Desktop.getDesktop().open(archivo);  // Abre con el visor de PDF predeterminado
+            else System.out.println("El archivo no existe.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_UltimaTransaccionActionPerformed
 
     private void AgregarRetiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AgregarRetiroActionPerformed
         // TODO add your handling code here:
@@ -790,8 +880,30 @@ public class InterfazCajero extends javax.swing.JDialog {
 
     private void ConsultarRetiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarRetiroActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_ConsultarRetiroActionPerformed
 
+    public void cargarRetirosEnTabla(JTable tabla) {
+        String ruta = "retiros.txt";
+        DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+
+        // Limpia la tabla antes de cargar
+        modelo.setRowCount(0);
+
+        try (BufferedReader br = new BufferedReader(new FileReader(ruta))) {
+            String linea;
+
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split("\t");  // separa por tabulación
+                if (datos.length == 3) {  // aseguramos que haya 3 campos
+                    modelo.addRow(new Object[]{datos[0], datos[1], datos[2]});
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+}
+    
     private void TextProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TextProductoActionPerformed
         // TODO add your handling code here:
         String entrada = TextProducto.getText().trim();
@@ -862,26 +974,31 @@ public class InterfazCajero extends javax.swing.JDialog {
 
     private void EfectivoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EfectivoVentaActionPerformed
         // TODO add your handling code here:
+        if (TablaProducto.getRowCount() == 0) return;
         Cobro("Efectivo");
     }//GEN-LAST:event_EfectivoVentaActionPerformed
 
     private void CuponVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CuponVentaActionPerformed
         // TODO add your handling code here:
+        if (TablaProducto.getRowCount() == 0) return;
         Cobro("Cupon");
     }//GEN-LAST:event_CuponVentaActionPerformed
 
     private void DebitoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DebitoVentaActionPerformed
         // TODO add your handling code here:
+        if (TablaProducto.getRowCount() == 0) return;
         Cobro("Debito");
     }//GEN-LAST:event_DebitoVentaActionPerformed
 
     private void CreditoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreditoVentaActionPerformed
         // TODO add your handling code here:
+        if (TablaProducto.getRowCount() == 0) return;
         Cobro("Credito");
     }//GEN-LAST:event_CreditoVentaActionPerformed
 
     private void ValeVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValeVentaActionPerformed
         // TODO add your handling code here:
+        if (TablaProducto.getRowCount() == 0) return;
         Cobro("Vale");
     }//GEN-LAST:event_ValeVentaActionPerformed
 
@@ -909,7 +1026,7 @@ public class InterfazCajero extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_TVeinteActionPerformed
 
-    private void GenerarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GenerarPedidoActionPerformed
+    private void GenerarRetiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GenerarRetiroActionPerformed
         // TODO add your handling code here:
         List<String> datosRetiro = new ArrayList<>();
         datosRetiro.add(TMil.getText()); //Cantidad de billetes de 1000
@@ -918,6 +1035,7 @@ public class InterfazCajero extends javax.swing.JDialog {
         datosRetiro.add(TCien.getText()); //Cantidad de billetes de 100
         datosRetiro.add(TCincuenta.getText()); //Cantidad de billetes de 50
         datosRetiro.add(TVeinte.getText()); //Cantidad de billetes de 20
+        datosRetiro.add(nombreCajero);
         
         Retiros += Integer.parseInt(datosRetiro.get(0)) * 1000;     // Billetes de 1000
         Retiros += Integer.parseInt(datosRetiro.get(1)) * 500;      // Billetes de 500
@@ -927,7 +1045,7 @@ public class InterfazCajero extends javax.swing.JDialog {
         Retiros += Integer.parseInt(datosRetiro.get(5)) * 20;       // Billetes de 20
         datosRetiro.add(Retiros+"");
         new PanelRetiro(null, true, datosRetiro).setVisible(true);
-    }//GEN-LAST:event_GenerarPedidoActionPerformed
+    }//GEN-LAST:event_GenerarRetiroActionPerformed
 
     /**
      * @param args the command line arguments
@@ -989,10 +1107,11 @@ public class InterfazCajero extends javax.swing.JDialog {
     private javax.swing.JButton CuponVenta;
     private javax.swing.JButton DebitoVenta;
     private javax.swing.JButton EfectivoVenta;
-    private javax.swing.JButton GenerarPedido;
+    private javax.swing.JButton GenerarRetiro;
     private javax.swing.JPanel InicioPanel;
     private javax.swing.JLabel LTotalRetiro;
     private javax.swing.JPanel PanelBotones;
+    private javax.swing.JPanel PanelConsultarRetiros;
     private javax.swing.JPanel PanelDetalleRetiros;
     private javax.swing.JPanel PanelDetalleVentas;
     private javax.swing.JPanel PanelDetalles;
@@ -1012,10 +1131,13 @@ public class InterfazCajero extends javax.swing.JDialog {
     private javax.swing.JTextField TVeinte;
     private javax.swing.JTable TablaProducto;
     private javax.swing.JTextField TextProducto;
+    private javax.swing.JButton UltimaTransaccion;
     private javax.swing.JButton ValeVenta;
-    private javax.swing.JButton jButton13;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1026,5 +1148,7 @@ public class InterfazCajero extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }

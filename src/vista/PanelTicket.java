@@ -4,13 +4,34 @@
  */
 package vista;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import com.itextpdf.text.pdf.PdfWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JDialog;
 import modelo.DatosTablaVenta;
 import modelo.Producto;
+import java.awt.Graphics2D;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.FileOutputStream;
+import java.time.LocalDate;
+import javax.imageio.ImageIO;
 /**
  *
  * @author Hp EliteBook
@@ -42,34 +63,90 @@ public class PanelTicket extends javax.swing.JDialog {
         pago = cambio;
         CantidadPag = Pagado;
         pagos = pagosParciales;
-        ModificarTicket();        
+        ModificarTicket();
+        String texto =  jTextArea2.getText();
+        generarTicket(texto, "ticket.pdf");
+        // Esto hace que se cierre justo cuando se muestre
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                dispose(); // Ahora sí se cierra bien
+            }
+        });
     }
     
     public void ModificarTicket(){
         total = total.setScale(2, RoundingMode.HALF_UP);
         pago = pago.setScale(2, RoundingMode.HALF_UP);
         agregarTipoPago();
-        jTextArea2.setText("                        RFC: CAL971950HR7\n               Régimen General de la Ley del ISR\n               Calzados MiChingon S.A. de C.V.\n                        Emiliano Zapata No. 1\n                       Col. Centro C.P. 68000\n                     Oaxaca de Juarez, Oaxaca.\n---------------------------------------------------------------\nStaff: Trans:\nDate: \n---------------------------------------------------------------\nNumeroSocio Nombre\n---------------------------------------------------------------\n"
+        jTextArea2.setText(
+                  "                        RFC: CAL971950HR7\n"
+                + "               Régimen General de la Ley del ISR\n"
+                + "               Calzados MiChingon S.A. de C.V.\n"
+                + "                        Emiliano Zapata No. 1\n"
+                + "                       Col. Centro C.P. 68000\n"
+                + "                     Oaxaca de Juarez, Oaxaca.\n"
+                + "---------------------------------------------------------------\n"
+                + "Staff: Trans:\n"
+                + "Date: "+ LocalDate.now()+"\n"
+                + "---------------------------------------------------------------\n"
+                + "NumeroSocio Nombre\n"
+                + "---------------------------------------------------------------\n"
                 + "Salesperson: "+nombreCajero+"\n"
-                        + "---------------------------------------------------------------\n"
-                        + "Descripcion:\t\t\tMonto:\n"
-                        + "---------------------------------------------------------------\n"
-                        + ""+NombrePrecio+"---------------------------------------------------------------\n"
-                                + "Total $\t\t\t"+total+"\n"
-                                        + ""+Tp+"\t\t\t"+"\n"
-                                                + ""+"El cambio es:\t\t\t"+pago+"\n"
-                                                        + "---------------------------------------------------------------\n"
-                                                        + "Numero de Items:\t\t"+numItems+"\n---------------------------------------------------------------\n\t\t                \tMonto:\n\t\t                \t"+total+"\n---------------------------------------------------------------\n\tGracias por su Compra.\n\tSolo cambios con ticket.\n\n      Tus datos estan protegidos. Consulta el aviso de \n              privacidad en www.michingon.com\n\n     Si requiere factura solicitela al momento. De no \n    hacerlo, esta venta se integrara a la factura global\n                                      diaria.\n\n                             Politicas de pago\n           Todos nuestros productos incluyen I.V.A \n        Aceptamos pagos en efectivo con targetas de \n       crédito y débito  (VISA MASTERCARD). No \n   aceptamos American Express ni vales de despensa. \n          Al pagar con targeta bancaria es  necesario \n       presentar una identifcacion oficial. Si necesita\n      factura, debe solicitarla al momento de realizar \n          su pago. No se realizaran factura de dias \n                         posteriores a la compra.\n\n\t    Politicas de cambio.\n     Debe presetnar su ticket de compra original. No \n        hay cambios en mercancia de oferta por ser \n     utlimos pares o piezas. No hay garantia en tapas, \n         tacones, y accesorios (luces, cierres, etc). El \n         calzado, ropa y accesorios, tiene garantia de \n     90 días. El cambio procederá bajo las siguientes \n            condiciones: despegado descosturado, \n     reventado de correas(bajo condiciones normales \n      de uso). Mercancia que no procede al cambio: \n       mojado, con mal olor, mal uso del cliente. Si \n       el producto presenta una anomalía, de dudosa \n       procedencia este se mandará a revisión con el \n      proveedor para determinar la causa del defecto. \n        En un periodo de 3 a 4 días hábiles se le dará \n         una respuesta sobre el reclamo del producto.\n\n\t   Politica de devolucion:\n     Debe presentar su ticket de compra original. Que \n              el Zapato no este pisado, ni sucio. Las \n     devoluciones deberan hacerse en su caja original. \n       No se aceptan devoluciones de impares, ni de \n      productos de promocion y/o descuento por ser \n                             ultimos pares o piezas.\n");
+                + "---------------------------------------------------------------\n"
+                + "Descripcion:                                             Monto:\n"
+                + "---------------------------------------------------------------\n"
+                + ""+NombrePrecio+""
+                + "---------------------------------------------------------------\n"
+                + "Total $                                                      "+total+"\n"
+                + ""+Tp+""+"\n"
+                + ""+"El cambio es:                                             "+pago+"\n"
+                + "---------------------------------------------------------------\n"
+                + "Numero de Items:                                             "+numItems+"\n"
+                + "---------------------------------------------------------------\n"
+                + "                                                             Monto:\n"
+                + "                                                                 "+total+"\n"
+                + "---------------------------------------------------------------\n"
+                + "                 Gracias por su Compra.\n"
+                + "                Solo cambios con ticket.\n"
+                + "\n"
+                + "      Tus datos estan protegidos. Consulta el aviso de \n"
+                + "              privacidad en michingon.com\n\n     Si requiere factura solicitela al momento. De no \n    hacerlo, esta venta se integrara a la factura global\n                                      diaria.\n\n                             Politicas de pago\n           Todos nuestros productos incluyen I.V.A \n        Aceptamos pagos en efectivo con targetas de \n       crédito y débito  (VISA MASTERCARD). No \n   aceptamos American Express ni vales de despensa. \n          Al pagar con targeta bancaria es  necesario \n       presentar una identifcacion oficial. Si necesita\n      factura, debe solicitarla al momento de realizar \n          su pago. No se realizaran factura de dias \n                         posteriores a la compra.\n\n\t    Politicas de cambio.\n     Debe presetnar su ticket de compra original. No \n        hay cambios en mercancia de oferta por ser \n     utlimos pares o piezas. No hay garantia en tapas, \n         tacones, y accesorios (luces, cierres, etc). El \n         calzado, ropa y accesorios, tiene garantia de \n     90 días. El cambio procederá bajo las siguientes \n            condiciones: despegado descosturado, \n     reventado de correas(bajo condiciones normales \n      de uso). Mercancia que no procede al cambio: \n       mojado, con mal olor, mal uso del cliente. Si \n       el producto presenta una anomalía, de dudosa \n       procedencia este se mandará a revisión con el \n      proveedor para determinar la causa del defecto. \n        En un periodo de 3 a 4 días hábiles se le dará \n         una respuesta sobre el reclamo del producto.\n\n\t   Politica de devolucion:\n     Debe presentar su ticket de compra original. Que \n              el Zapato no este pisado, ni sucio. Las \n     devoluciones deberan hacerse en su caja original. \n       No se aceptan devoluciones de impares, ni de \n      productos de promocion y/o descuento por ser \n                             ultimos pares o piezas.\n");
     }
+    
+    public static void generarTicket(String contenido, String nombreArchivo) {
+        Document doc = new Document();
+
+        try {
+            PdfWriter.getInstance(doc, new FileOutputStream(nombreArchivo));
+            doc.open();
+
+            // Agregar el texto completo del JTextArea
+            Paragraph parrafo = new Paragraph(contenido);
+            doc.add(parrafo);
+
+            doc.close();
+
+            // Abrir el PDF automáticamente
+            File archivoPDF = new File(nombreArchivo);
+            if (archivoPDF.exists() && Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().open(archivoPDF);
+            }
+
+        } catch (DocumentException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public void cargarProductos(List<DatosTablaVenta> productos){
         for(DatosTablaVenta dtv: productos){
-            NombrePrecio += dtv.getDescripcion() +"\t\t" + dtv.getSubtotal()+"\n";
+            NombrePrecio += dtv.getDescripcion() +"                                    " + dtv.getSubtotal()+"\n";
             numItems = dtv.getCantidad();
         }
     }
     public void agregarTipoPago(){
         for (int i = 0; i < tipoPago.size(); i++) 
-            Tp += tipoPago.get(i) + "\t\t\t" + pagos.get(i) + "\n";
+            Tp += tipoPago.get(i) + "                                             " + pagos.get(i) + "\n";
     }
 
     /**

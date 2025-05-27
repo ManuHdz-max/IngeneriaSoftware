@@ -40,6 +40,7 @@ private LocalTime hora;
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("HH:mm:ss");
         String horaFormateada = hora.format(formato);
         JHora.setText(horaFormateada);
+        
     }
 
     /**
