@@ -8,6 +8,8 @@ import control.AdnDatos;
 import control.InventarioJpaController;
 import control.PedidoJpaController;
 import control.ProductoJpaController;
+import control.exceptions.IllegalOrphanException;
+import control.exceptions.NonexistentEntityException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -203,16 +205,20 @@ public class InterfazInventario extends javax.swing.JDialog {
         txtIdPedido8 = new javax.swing.JTextField();
         AgregarProducto = new javax.swing.JDialog();
         jLabel22 = new javax.swing.JLabel();
-        txtIdPedido4 = new javax.swing.JTextField();
+        txtCantAAP = new javax.swing.JTextField();
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
-        txtIdPedido5 = new javax.swing.JTextField();
+        txtProductoAP = new javax.swing.JTextField();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
-        txtIdPedido9 = new javax.swing.JTextField();
-        txtIdPedido10 = new javax.swing.JTextField();
+        txtUbicacionAP = new javax.swing.JTextField();
+        txtCantMAP = new javax.swing.JTextField();
         jLabel30 = new javax.swing.JLabel();
+        jLabel34 = new javax.swing.JLabel();
+        jLabel35 = new javax.swing.JLabel();
+        cbmTallaAP = new javax.swing.JComboBox<>();
+        cbmColorAP = new javax.swing.JComboBox<>();
         EditarProducto = new javax.swing.JDialog();
         jLabel26 = new javax.swing.JLabel();
         txtIdPedido6 = new javax.swing.JTextField();
@@ -280,6 +286,8 @@ public class InterfazInventario extends javax.swing.JDialog {
         txtAgregarSP = new javax.swing.JButton();
         btnEliminarSP = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
+
+        EditarPedido.setModal(true);
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel14.setText("Identificador Pedido:");
@@ -349,6 +357,8 @@ public class InterfazInventario extends javax.swing.JDialog {
                     .addComponent(jButton4))
                 .addGap(15, 15, 15))
         );
+
+        AgregarStock.setModal(true);
 
         jLabel18.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel18.setText("Identificador Inv. :");
@@ -422,6 +432,9 @@ public class InterfazInventario extends javax.swing.JDialog {
                 .addGap(15, 15, 15))
         );
 
+        AgregarProducto.setModal(true);
+        AgregarProducto.setSize(new java.awt.Dimension(402, 383));
+
         jLabel22.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel22.setText("Identificador Producto:");
 
@@ -434,12 +447,38 @@ public class InterfazInventario extends javax.swing.JDialog {
         jLabel25.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel25.setText("Ubicacion:");
 
+        txtProductoAP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtProductoAPActionPerformed(evt);
+            }
+        });
+
         jButton7.setText("Cancelar");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         jButton8.setText("Agregar");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         jLabel30.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel30.setText("Cantidad Minima:");
+
+        jLabel34.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        jLabel34.setText("Color:");
+
+        jLabel35.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        jLabel35.setText("Talla:");
+
+        cbmTallaAP.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        cbmColorAP.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout AgregarProductoLayout = new javax.swing.GroupLayout(AgregarProducto.getContentPane());
         AgregarProducto.getContentPane().setLayout(AgregarProductoLayout);
@@ -457,7 +496,9 @@ public class InterfazInventario extends javax.swing.JDialog {
                             .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel25, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel30, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jLabel30, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel34, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(AgregarProductoLayout.createSequentialGroup()
                         .addGap(100, 100, 100)
                         .addComponent(jButton7)))
@@ -469,10 +510,13 @@ public class InterfazInventario extends javax.swing.JDialog {
                     .addGroup(AgregarProductoLayout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(AgregarProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtIdPedido5, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtIdPedido4, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtIdPedido9, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtIdPedido10, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtProductoAP, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCantAAP, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtUbicacionAP, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCantMAP, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(AgregarProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(cbmColorAP, javax.swing.GroupLayout.Alignment.LEADING, 0, 90, Short.MAX_VALUE)
+                                .addComponent(cbmTallaAP, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         AgregarProductoLayout.setVerticalGroup(
@@ -483,25 +527,35 @@ public class InterfazInventario extends javax.swing.JDialog {
                 .addGap(30, 30, 30)
                 .addGroup(AgregarProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel22)
-                    .addComponent(txtIdPedido5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtProductoAP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(11, 11, 11)
+                .addGroup(AgregarProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel35)
+                    .addComponent(cbmTallaAP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(11, 11, 11)
+                .addGroup(AgregarProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel34)
+                    .addComponent(cbmColorAP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(11, 11, 11)
                 .addGroup(AgregarProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel25)
-                    .addComponent(txtIdPedido9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtUbicacionAP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(11, 11, 11)
                 .addGroup(AgregarProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel24)
-                    .addComponent(txtIdPedido4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCantAAP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(AgregarProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel30)
-                    .addComponent(txtIdPedido10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                    .addComponent(txtCantMAP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
                 .addGroup(AgregarProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton7)
                     .addComponent(jButton8))
                 .addGap(15, 15, 15))
         );
+
+        EditarProducto.setModal(true);
 
         jLabel26.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel26.setText("Producto:");
@@ -599,6 +653,9 @@ public class InterfazInventario extends javax.swing.JDialog {
                 .addGap(15, 15, 15))
         );
 
+        Confirmacion.setModal(true);
+        Confirmacion.setSize(new java.awt.Dimension(414, 138));
+
         jLabel33.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
         jLabel33.setText("¿Desea eliminar el elemento seleccionado?");
 
@@ -640,7 +697,7 @@ public class InterfazInventario extends javax.swing.JDialog {
                 .addGroup(ConfirmacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAceptarC)
                     .addComponent(btnCancelarC))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -1118,6 +1175,20 @@ public class InterfazInventario extends javax.swing.JDialog {
             try{
                 p.setPrecio(new BigDecimal(txtPrecio.getText()));
                 cProducto.create(p);
+                productos = cProducto.findProductoEntities();
+                /*productos_s = new ArrayList<>();
+                for(Producto pr:productos)
+                    productos_s.add(pr);
+                datosProductos = new ArrayList<>();
+                for(Producto pr:productos_s)
+                    datosProductos.add(pr);
+                MTablaProducto modTabp = new MTablaProducto(datosProductos);
+                lproductos.setModel(modTabp);*/
+                txtNombre.setText("");
+                txtDescripcion.setText("");
+                txtTalla.setText("");
+                txtColor.setText("");
+                txtPrecio.setText("");
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this,"Formato de Precio invalido");
             }
@@ -1318,22 +1389,87 @@ public class InterfazInventario extends javax.swing.JDialog {
     }//GEN-LAST:event_btnAumentarSPActionPerformed
 
     private void txtAgregarSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAgregarSPActionPerformed
-        // TODO add your handling code here:
+        //Producto pa = modTabInventario.getInventario(linventarios.getSelectedRow()).getIdProducto();
+        //txtProductoAP.setText(Integer.toString(pa.getIdProducto()));
+        cbmTallaAP.removeAllItems();
+        cbmColorAP.removeAllItems();
+        AgregarProducto.setVisible(true);
+        /*String talla = pa.getTalla();
+        String tallas []= talla.split(",");
+        for(String tal:tallas)
+            cbmTallaAP.addItem(tal);
+        String color = pa.getColor();
+        String colores []= color.split(",");
+        for(String col:colores)
+            cbmColorAP.addItem(col);
+        AgregarProducto.setVisible(true);*/
     }//GEN-LAST:event_txtAgregarSPActionPerformed
 
     private void btnEliminarPPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarPPActionPerformed
-        Inventario invs = modTabInventario.getInventario(linventarios.getSelectedRow());
-        
+        Pedido pe = modTabPedido.getPedido(lpedidos.getSelectedRow());
+        Confirmacion.setVisible(true);
+        if(confirmacion){
+            int id_e = pe.getIdPedido();
+            for(Pedido pd: pedidos)
+                if(pd.getIdPedido()==id_e){
+                    try {
+                         cPedido.destroy(id_e);
+                        break;
+                    } catch (IllegalOrphanException ex) {
+                        Logger.getLogger("Hola");
+                    } catch (NonexistentEntityException ex) {
+                        Logger.getLogger("Hola 2");
+                    }
+                }
+            pedidos = cPedido.findPedidoEntities();
+            pedidos_s = new ArrayList<>();
+            for(Pedido pd:pedidos)
+                pedidos_s.add(pd);
+        }
     }//GEN-LAST:event_btnEliminarPPActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        //Producto pe = modTabProducto.getProducto(lproductos.getSelectedRow());
+        Producto pe = modTabProducto.getProducto(lproductos.getSelectedRow());
         Confirmacion.setVisible(true);
-        Confirmacion.setSize(400,300);
+        if(confirmacion){
+            int id_e = pe.getIdProducto();
+            for(Producto pr: productos)
+                if(pr.getIdProducto()==id_e){
+                    try {
+                        cProducto.destroy(id_e);
+                        break;
+                    } catch (IllegalOrphanException ex) {
+                        Logger.getLogger("Hola");
+                    } catch (NonexistentEntityException ex) {
+                        Logger.getLogger("Hola 2");
+                    }
+                }
+            productos = cProducto.findProductoEntities();
+            productos_s = new ArrayList<>();
+            for(Producto pr:productos)
+                productos_s.add(pr);
+        }
+        
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnEliminarSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarSPActionPerformed
-        Pedido pe = modTabPedido.getPedido(lpedidos.getSelectedRow());
+        Inventario invs = modTabInventario.getInventario(linventarios.getSelectedRow());
+        Confirmacion.setVisible(true);
+        if(confirmacion){
+            int id_e = invs.getIdInventario();
+            for(Inventario ivp: inventarios)
+                if(ivp.getIdInventario()==id_e)
+                    try {
+                         cInventario.destroy(id_e);
+                         break;
+                    } catch (NonexistentEntityException ex) {
+                        Logger.getLogger("Hola 2");
+                    }
+            inventarios = cInventario.findInventarioEntities();
+            inventarios_s = new ArrayList<>();
+            for(Inventario iv:inventarios)
+                inventarios.add(iv);
+        }
     }//GEN-LAST:event_btnEliminarSPActionPerformed
 
     private void btnAceptarCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarCActionPerformed
@@ -1345,6 +1481,34 @@ public class InterfazInventario extends javax.swing.JDialog {
         confirmacion=false;
         Confirmacion.dispose();
     }//GEN-LAST:event_btnCancelarCActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        AgregarProducto.dispose();
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        AgregarProducto.dispose();
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void txtProductoAPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProductoAPActionPerformed
+        int id_pa = Integer.parseInt(txtProductoAP.getText());
+        int conf =0;
+        for(Inventario iv_ap:inventarios)
+            if(iv_ap.getIdProducto().getIdProducto()==id_pa){
+                 String talla = iv_ap.getIdProducto().getTalla();
+                 String tallas []= talla.split(",");
+                for(String tal:tallas)
+                    cbmTallaAP.addItem(tal);
+                String color = iv_ap.getIdProducto().getColor();
+                String colores []= color.split(",");
+                for(String col:colores)
+                    cbmColorAP.addItem(col);
+                conf++;
+                break;
+            }
+        if(conf==0)
+            JOptionPane.showMessageDialog(this,"No existe un producto con ese Identificador");
+    }//GEN-LAST:event_txtProductoAPActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1405,9 +1569,11 @@ public class InterfazInventario extends javax.swing.JDialog {
     private javax.swing.JButton btnEliminarSP;
     private javax.swing.JButton btnPosponer;
     private javax.swing.JButton btnR;
+    private javax.swing.JComboBox<String> cbmColorAP;
     private javax.swing.JComboBox<String> cbmColumn;
     private javax.swing.JComboBox<String> cbmFiltroA;
     private javax.swing.JComboBox<String> cbmFiltroP;
+    private javax.swing.JComboBox<String> cbmTallaAP;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -1443,6 +1609,8 @@ public class InterfazInventario extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1469,23 +1637,23 @@ public class InterfazInventario extends javax.swing.JDialog {
     private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtBuscarA;
     private javax.swing.JTextField txtBuscarP;
+    private javax.swing.JTextField txtCantAAP;
+    private javax.swing.JTextField txtCantMAP;
     private javax.swing.JTextField txtColor;
     private javax.swing.JTextArea txtDescripcion;
     private javax.swing.JTextField txtIdPedido;
     private javax.swing.JTextField txtIdPedido1;
-    private javax.swing.JTextField txtIdPedido10;
     private javax.swing.JTextField txtIdPedido12;
     private javax.swing.JTextField txtIdPedido13;
     private javax.swing.JTextField txtIdPedido2;
     private javax.swing.JTextField txtIdPedido3;
-    private javax.swing.JTextField txtIdPedido4;
-    private javax.swing.JTextField txtIdPedido5;
     private javax.swing.JTextField txtIdPedido6;
     private javax.swing.JTextField txtIdPedido7;
     private javax.swing.JTextField txtIdPedido8;
-    private javax.swing.JTextField txtIdPedido9;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtPrecio;
+    private javax.swing.JTextField txtProductoAP;
     private javax.swing.JTextField txtTalla;
+    private javax.swing.JTextField txtUbicacionAP;
     // End of variables declaration//GEN-END:variables
 }
