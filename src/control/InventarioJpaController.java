@@ -18,13 +18,13 @@ import modelo.Producto;
 
 /**
  *
- * @author magal
+ * @author ericg
  */
-public class InventarioJpaController {
-    
+public class InventarioJpaController implements Serializable {
+
     public InventarioJpaController(EntityManagerFactory emf) {
         this.emf = emf;
-}
+    }
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {
