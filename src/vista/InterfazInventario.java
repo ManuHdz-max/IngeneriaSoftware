@@ -1487,6 +1487,16 @@ public class InterfazInventario extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        Inventario inv = new Inventario();
+        for(Producto pr:productos_s)
+            if(pr.getIdProducto()==Integer.parseInt(txtProductoAP.getText())){
+                inv.setIdProducto(pr);
+                inv.setUbicacion(txtUbicacionAP.getText());
+                inv.setCantidadActual(Integer.parseInt(txtCantAAP.getText()));
+                inv.setCantidadMinima(Integer.parseInt(txtCantMAP.getText()));
+                inv.setTalla(String.valueOf(cbmTallaAP.getSelectedItem()));
+                inv.setColor(String.valueOf(cbmColorAP.getSelectedItem()));
+            }
         AgregarProducto.dispose();
     }//GEN-LAST:event_jButton8ActionPerformed
 
