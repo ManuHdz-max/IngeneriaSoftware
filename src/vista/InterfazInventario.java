@@ -187,13 +187,14 @@ public class InterfazInventario extends javax.swing.JDialog {
 
         EditarPedido = new javax.swing.JDialog();
         jLabel14 = new javax.swing.JLabel();
-        txtIdPedido = new javax.swing.JTextField();
+        txtClientePF = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
-        txtIdPedido1 = new javax.swing.JTextField();
+        txtPedidoPF = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        JCalendarF = new com.toedter.calendar.JCalendar();
         AgregarStock = new javax.swing.JDialog();
         jLabel18 = new javax.swing.JLabel();
         txtNombreAS = new javax.swing.JTextField();
@@ -295,11 +296,18 @@ public class InterfazInventario extends javax.swing.JDialog {
         jLabel7 = new javax.swing.JLabel();
 
         EditarPedido.setModal(true);
-        EditarPedido.setPreferredSize(new java.awt.Dimension(391, 269));
-        EditarPedido.setSize(new java.awt.Dimension(401, 299));
+        EditarPedido.setPreferredSize(new java.awt.Dimension(430, 350));
+        EditarPedido.setResizable(false);
+        EditarPedido.setSize(new java.awt.Dimension(440, 400));
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel14.setText("Identificador Pedido:");
+
+        txtClientePF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtClientePFActionPerformed(evt);
+            }
+        });
 
         jLabel15.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
         jLabel15.setText("Posponer Fecha");
@@ -329,7 +337,7 @@ public class InterfazInventario extends javax.swing.JDialog {
         EditarPedidoLayout.setHorizontalGroup(
             EditarPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EditarPedidoLayout.createSequentialGroup()
-                .addContainerGap(107, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel15)
                 .addGap(108, 108, 108))
             .addGroup(EditarPedidoLayout.createSequentialGroup()
@@ -347,13 +355,15 @@ public class InterfazInventario extends javax.swing.JDialog {
                     .addGroup(EditarPedidoLayout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(EditarPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtIdPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtIdPedido1, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EditarPedidoLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton4)
-                        .addGap(100, 100, 100))))
+                            .addComponent(txtClientePF, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtPedidoPF, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(EditarPedidoLayout.createSequentialGroup()
+                        .addGap(53, 53, 53)
+                        .addComponent(jButton4))
+                    .addGroup(EditarPedidoLayout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(JCalendarF, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
         EditarPedidoLayout.setVerticalGroup(
             EditarPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -363,14 +373,16 @@ public class InterfazInventario extends javax.swing.JDialog {
                 .addGap(30, 30, 30)
                 .addGroup(EditarPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
-                    .addComponent(txtIdPedido1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPedidoPF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(11, 11, 11)
                 .addGroup(EditarPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
-                    .addComponent(txtIdPedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtClientePF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(11, 11, 11)
-                .addComponent(jLabel16)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
+                .addGroup(EditarPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel16)
+                    .addComponent(JCalendarF, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(EditarPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton3)
                     .addComponent(jButton4))
@@ -378,6 +390,7 @@ public class InterfazInventario extends javax.swing.JDialog {
         );
 
         AgregarStock.setModal(true);
+        AgregarStock.setResizable(false);
         AgregarStock.setSize(new java.awt.Dimension(402, 268));
 
         jLabel18.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
@@ -470,6 +483,7 @@ public class InterfazInventario extends javax.swing.JDialog {
 
         AgregarProducto.setModal(true);
         AgregarProducto.setPreferredSize(new java.awt.Dimension(408, 488));
+        AgregarProducto.setResizable(false);
         AgregarProducto.setSize(new java.awt.Dimension(426, 528));
 
         jLabel22.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
@@ -637,6 +651,7 @@ public class InterfazInventario extends javax.swing.JDialog {
         );
 
         EditarProducto.setModal(true);
+        EditarProducto.setResizable(false);
         EditarProducto.setSize(new java.awt.Dimension(403, 428));
 
         jLabel26.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
@@ -746,6 +761,7 @@ public class InterfazInventario extends javax.swing.JDialog {
         );
 
         Confirmacion.setModal(true);
+        Confirmacion.setResizable(false);
         Confirmacion.setSize(new java.awt.Dimension(414, 138));
 
         jLabel33.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
@@ -793,6 +809,7 @@ public class InterfazInventario extends javax.swing.JDialog {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         tabPanel.setTabPlacement(javax.swing.JTabbedPane.LEFT);
         tabPanel.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -1034,6 +1051,11 @@ public class InterfazInventario extends javax.swing.JDialog {
         });
 
         btnPosponer.setText("Posponer");
+        btnPosponer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPosponerActionPerformed(evt);
+            }
+        });
 
         btnEliminarPP.setText("Eliminar");
         btnEliminarPP.addActionListener(new java.awt.event.ActionListener() {
@@ -1170,21 +1192,21 @@ public class InterfazInventario extends javax.swing.JDialog {
         menuStockLayout.setHorizontalGroup(
             menuStockLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, menuStockLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(14, 14, 14))
+                .addContainerGap(23, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, menuStockLayout.createSequentialGroup()
                 .addGroup(menuStockLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(menuStockLayout.createSequentialGroup()
                         .addGroup(menuStockLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(menuStockLayout.createSequentialGroup()
-                                .addGap(25, 25, 25)
+                                .addContainerGap(25, Short.MAX_VALUE)
                                 .addComponent(jLabel13)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtBuscarA, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cbmFiltroA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnBuscarSP))
                             .addGroup(menuStockLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
@@ -1193,7 +1215,7 @@ public class InterfazInventario extends javax.swing.JDialog {
                                 .addComponent(txtAgregarSP)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnAumentarSP)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(menuStockLayout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addComponent(jLabel11)
@@ -1203,7 +1225,7 @@ public class InterfazInventario extends javax.swing.JDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, menuStockLayout.createSequentialGroup()
                         .addComponent(jLabel12)
                         .addGap(12, 12, 12)))
-                .addGap(22, 22, 22))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         menuStockLayout.setVerticalGroup(
             menuStockLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1212,7 +1234,7 @@ public class InterfazInventario extends javax.swing.JDialog {
                     .addGroup(menuStockLayout.createSequentialGroup()
                         .addContainerGap(14, Short.MAX_VALUE)
                         .addComponent(jLabel12)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(menuStockLayout.createSequentialGroup()
                         .addGap(30, 30, 30)
@@ -1714,7 +1736,15 @@ public class InterfazInventario extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+        try{
+            Pedido pa= modTabPedido.getPedido(lpedidos.getSelectedRow());
+            Date f = JCalendarF.getDate();
+            pa.setFechaEntregaEstimada(f);
+            cPedido.edit(cPedido.findPedido(pa.getIdPedido()));
+            EditarPedido.dispose();
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(this,"No se ha seleccionado Fecha");
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void btnCancelarAgregarStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarAgregarStockActionPerformed
@@ -1756,6 +1786,27 @@ public class InterfazInventario extends javax.swing.JDialog {
     private void txtUbicacionAPPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUbicacionAPPActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtUbicacionAPPActionPerformed
+
+    private void btnPosponerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPosponerActionPerformed
+        try{
+        Pedido pa= modTabPedido.getPedido(lpedidos.getSelectedRow());
+        if(!pa.getEstado().trim().toLowerCase().equals("cancelado")){
+            txtPedidoPF.setText(Integer.toString(pa.getIdPedido()));
+            txtClientePF.setText(pa.getIdCliente().getNombre());
+            txtPedidoPF.setEnabled(false);
+            txtClientePF.setEnabled(false);
+            EditarPedido.setVisible(true);
+        }
+        else
+            JOptionPane.showMessageDialog(this,"El pedido ya esta cancelado");
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(this,"Seleccione una fila de la tabla");
+        }
+    }//GEN-LAST:event_btnPosponerActionPerformed
+
+    private void txtClientePFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClientePFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtClientePFActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1805,6 +1856,7 @@ public class InterfazInventario extends javax.swing.JDialog {
     private javax.swing.JDialog Confirmacion;
     private javax.swing.JDialog EditarPedido;
     private javax.swing.JDialog EditarProducto;
+    private com.toedter.calendar.JCalendar JCalendarF;
     private javax.swing.JButton btnAceptarC;
     private javax.swing.JButton btnAgregarProductoInv;
     private javax.swing.JButton btnAgregarStock;
@@ -1890,16 +1942,16 @@ public class InterfazInventario extends javax.swing.JDialog {
     private javax.swing.JTextField txtBuscarP;
     private javax.swing.JTextField txtCantAAP;
     private javax.swing.JTextField txtCantMAP;
+    private javax.swing.JTextField txtClientePF;
     private javax.swing.JTextField txtColor;
     private javax.swing.JTextField txtColorEP;
     private javax.swing.JTextArea txtDescripcion;
     private javax.swing.JTextArea txtDescripcionEP;
-    private javax.swing.JTextField txtIdPedido;
-    private javax.swing.JTextField txtIdPedido1;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtNombreAS;
     private javax.swing.JTextField txtNombrePAP;
     private javax.swing.JTextArea txtObservacionesAP;
+    private javax.swing.JTextField txtPedidoPF;
     private javax.swing.JTextField txtPrecio;
     private javax.swing.JTextField txtPrecioEP;
     private javax.swing.JTextField txtProductoAP;
