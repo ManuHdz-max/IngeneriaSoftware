@@ -22,7 +22,7 @@ import javax.persistence.TemporalType;
 
 /**
  *
- * @author magal
+ * @author ericg
  */
 @Entity
 @Table(name = "inventario")
@@ -34,7 +34,9 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Inventario.findByUbicacion", query = "SELECT i FROM Inventario i WHERE i.ubicacion = :ubicacion"),
     @NamedQuery(name = "Inventario.findByFechaUltimaEntrada", query = "SELECT i FROM Inventario i WHERE i.fechaUltimaEntrada = :fechaUltimaEntrada"),
     @NamedQuery(name = "Inventario.findByFechaUltimaSalida", query = "SELECT i FROM Inventario i WHERE i.fechaUltimaSalida = :fechaUltimaSalida"),
-    @NamedQuery(name = "Inventario.findByObservaciones", query = "SELECT i FROM Inventario i WHERE i.observaciones = :observaciones")})
+    @NamedQuery(name = "Inventario.findByObservaciones", query = "SELECT i FROM Inventario i WHERE i.observaciones = :observaciones"),
+    @NamedQuery(name = "Inventario.findByTalla", query = "SELECT i FROM Inventario i WHERE i.talla = :talla"),
+    @NamedQuery(name = "Inventario.findByColor", query = "SELECT i FROM Inventario i WHERE i.color = :color")})
 public class Inventario implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -58,6 +60,10 @@ public class Inventario implements Serializable {
     private Date fechaUltimaSalida;
     @Column(name = "observaciones")
     private String observaciones;
+    @Column(name = "talla")
+    private String talla;
+    @Column(name = "color")
+    private String color;
     @JoinColumn(name = "id_producto", referencedColumnName = "id_producto")
     @ManyToOne(optional = false)
     private Producto idProducto;
@@ -128,6 +134,22 @@ public class Inventario implements Serializable {
 
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
+    }
+
+    public String getTalla() {
+        return talla;
+    }
+
+    public void setTalla(String talla) {
+        this.talla = talla;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public Producto getIdProducto() {
